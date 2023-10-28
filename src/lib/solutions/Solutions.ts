@@ -52,7 +52,10 @@ export default class Solutions {
         method,
       },
       take: 10,
-      skip: skip
+      skip: skip,
+      orderBy: {
+        createdAt: "desc"
+      }
     })
     
     return result;

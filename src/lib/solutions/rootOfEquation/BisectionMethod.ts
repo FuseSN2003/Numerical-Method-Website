@@ -26,36 +26,34 @@ export interface BisectionResult {
     iter: number
     iterations: BisectionIterData[]
     points: Point[]
-    pointsCal: Point[]
+    calPoints: Point[]
   }
   error?: string
 }
 
 export default class BisectionMethod extends RootOfEquation {
+  private xStart: number;
+  private xEnd: number;
 
   constructor(fx: string, xStart: number, xEnd: number, epsilon: number) {
-    super(fx, xStart, xEnd, epsilon);
+    super(fx, epsilon);
+    this.xStart = xStart;
+    this.xEnd = xEnd;
   }
 
   public solve(): BisectionResult {
-    const iterations: BisectionIterData[] = [];
-    const result: BisectionResult = {};
     const f = compile(this.fx)
+    const result: BisectionResult = {};
+    const iterations: BisectionIterData[] = [];
 
     let xl = this.xStart;
     let xr = this.xEnd;
-    let xm = 0, tolerance = 0;
+    let xm = 0;
     let fxm: number, xmOld;
 
     if(f.evaluate({x: xl}) * f.evaluate({x: xr}) > 0) {
       result.error = "Bisection method may not converge as f(xl) and f(xr) have the same sign.";
       return result;
-    }
-
-    const step = (xr - xl) / 100;
-    
-    for(let i = xl; i <= xr; i+=step) {
-      this.points.push({x: i, y: f.evaluate({x: i})})
     }
 
     do {
@@ -64,11 +62,11 @@ export default class BisectionMethod extends RootOfEquation {
 
       xm = (xl + xr) / 2;
       fxm = f.evaluate({x: xm});
-      tolerance = abs((xm - xmOld) / xm) * 100;
+      this.tolerance = abs((xm - xmOld) / xm) * 100;
 
-      this.pointsCal.push({x: xm, y: fxm});
+      this.calPoints.push({x: xm, y: fxm});
       iterations.push({
-        xl, xr, xm, iter: this.iter, tolerance, xmOld, fxm
+        xl, xr, xm, iter: this.iter, tolerance: this.tolerance, xmOld, fxm
       })
       
       if(f.evaluate({x: xm}) * f.evaluate({x: xr}) > 0) {
@@ -76,9 +74,15 @@ export default class BisectionMethod extends RootOfEquation {
       } else {
         xl = xm;
       }
-    } while (tolerance > this.epsilon)
 
-    result.ans = {xm, fxm, iter: this.iter, iterations, points: this.points, pointsCal: this.pointsCal}
+    } while (this.tolerance > this.epsilon)
+
+    const step = (this.xEnd - this.xStart) / 100;
+    for(let i = this.xStart; i <= this.xEnd / 2; i+=step) {
+      this.points.push({x: i, y: f.evaluate({x: i})})
+    }
+
+    result.ans = {xm, fxm, iter: this.iter, iterations, points: this.points, calPoints: this.calPoints}
 
     return result;
   }

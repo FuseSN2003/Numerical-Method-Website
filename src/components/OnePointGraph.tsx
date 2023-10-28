@@ -4,14 +4,14 @@ import { Point } from "@/types";
 import { Loader2 } from "lucide-react";
 const Plotly = dynamic(() => import("react-plotly.js"), { ssr: false, })
 
-interface RootOfEquationGraphProps {
+interface OnePointGraphProps {
   points: Point[] | undefined
   calPoints: Point[] | undefined
   ansPoint: Point[] | undefined
   loading: boolean
 }
 
-export default function RootOfEquationGraph({ points, calPoints, ansPoint, loading }: RootOfEquationGraphProps) {
+export default function OnePointGraph({ points, calPoints, ansPoint, loading }: OnePointGraphProps) {
   return (
     <>
       <div className="w-full min-h-[450px] flex flex-col py-8 px-12 border rounded-lg shadow-md bg-white overflow-x-auto">
@@ -25,10 +25,10 @@ export default function RootOfEquationGraph({ points, calPoints, ansPoint, loadi
             data={[
               {
                 x: points?.map((value) => value.x),
-                y: points?.map((value) => value.y),
+                y: points?.map((value) => value.x),
                 mode: "lines",
                 line: { color: "red" },
-                name: "f(x)",
+                name: "y = x",
                 transforms: [
                   {
                     type: "sort",
@@ -38,9 +38,10 @@ export default function RootOfEquationGraph({ points, calPoints, ansPoint, loadi
               {
                 x: calPoints?.map((value) => value.x),
                 y: calPoints?.map((value) => value.y),
-                mode: "markers",
+                mode: "lines+markers",
+                line: { color: "yellow" },
                 marker: { color: "blue" },
-                name: "f(xi)",
+                name: "g(x)",
                 transforms: [
                   {
                     type: "sort",
@@ -51,7 +52,7 @@ export default function RootOfEquationGraph({ points, calPoints, ansPoint, loadi
                 x: ansPoint?.map((value) => value.x),
                 y: ansPoint?.map((value) => value.y),
                 mode: "markers",
-                name: "Root x",
+                name: "Answer",
                 marker: { color: "green", size: 10 }
               }
             ]}

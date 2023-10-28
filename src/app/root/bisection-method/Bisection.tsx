@@ -21,11 +21,11 @@ const initialForm = {
   epsilon: 1e-6,
 }
 
-interface BisectionMethodProps {
+interface BisectionProps {
   question: BisectionInput[]
 }
 
-export default function BisectionMethod({ question }: BisectionMethodProps) {
+export default function Bisection({ question }: BisectionProps) {
   const [form, setForm] = useState<BisectionInput>(initialForm);
   const [result, setResult] = useState<BisectionResult>();
   const [alertDialog, setAlertDialog] = useState<boolean>(false);
@@ -145,12 +145,12 @@ export default function BisectionMethod({ question }: BisectionMethodProps) {
       <RootOfEquationGraph
         points={result?.ans?.points}
         ansPoint={result?.ans && [{x: result.ans.xm, y: result.ans.fxm}]}
-        pointsCal={result?.ans?.pointsCal}
+        calPoints={result?.ans?.calPoints}
         loading={loading}
       />
 
       <Tabs defaultValue="solutions">
-        <TabsList className="mb-2">
+        <TabsList className="mb-2 grid grid-cols-2 w-40">
           <TabsTrigger value="solutions">Solutions</TabsTrigger>
           <TabsTrigger value="table">Table</TabsTrigger>
         </TabsList>
@@ -173,7 +173,8 @@ export default function BisectionMethod({ question }: BisectionMethodProps) {
                       <InlineMath math={`f(x_{m}) = ${data.fxm}`} />
                       <InlineMath
                         math={`
-                          tolerance = \\left|\\frac{${data.xm} - ${data.xmOld}}{${data.xm}}\\right| * 100
+                          \\epsilon = \\left|\\frac{x_{m} - x_{mOld}}{x_{m}}\\right| * 100\\%
+                          = \\left|\\frac{${data.xm} - ${data.xmOld}}{${data.xm}}\\right| * 100\\%
                           = ${data.tolerance}\\%
                         `}
                       />
@@ -188,7 +189,7 @@ export default function BisectionMethod({ question }: BisectionMethodProps) {
                     <TableRow>
                       <TableHead><InlineMath math={`Iteration`}/></TableHead>
                       <TableHead><InlineMath math={`x_{i}`}/></TableHead>
-                      <TableHead><InlineMath math={`fx(x_{i})`}/></TableHead>
+                      <TableHead><InlineMath math={`f(x_{i})`}/></TableHead>
                       <TableHead><InlineMath math={`tolerance(\\%)`}/></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -198,13 +199,16 @@ export default function BisectionMethod({ question }: BisectionMethodProps) {
                         <TableCell><InlineMath math={`${data.iter}`}/></TableCell>
                         <TableCell><InlineMath math={`${data.xm}`}/></TableCell>
                         <TableCell><InlineMath math={`${data.fxm}`}/></TableCell>
-                        <TableCell><InlineMath math={`${data.tolerance}`}/></TableCell>
+                        <TableCell><InlineMath math={`${data.tolerance}\\%`}/></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TabsContent>
             </>
+          )}
+          {result?.error && (
+            <p>{result.error}</p>
           )}
         </ResultContainer>
       </Tabs>

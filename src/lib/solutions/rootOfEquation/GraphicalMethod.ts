@@ -21,7 +21,7 @@ export interface GraphicalResult {
     y: number
     iter: number
     points: Point[]
-    pointsCal: Point[]
+    calPoints: Point[]
     iterations: GraphicalIterData[]
   }
   error?: string
@@ -29,8 +29,13 @@ export interface GraphicalResult {
 
 export default class GraphicalMethod extends RootOfEquation {
   
+  private xStart: number;
+  private xEnd: number;
+
   constructor(fx: string, xStart: number, xEnd: number, epsilon: number) {
-    super(fx, xStart, xEnd, epsilon);
+    super(fx, epsilon);
+    this.xStart = xStart;
+    this.xEnd = xEnd;
   }
 
   private calcultateStep() {
@@ -41,7 +46,6 @@ export default class GraphicalMethod extends RootOfEquation {
 
   public solve(): GraphicalResult {
     const f = compile(this.fx);
-    const maxIter = 1000;
     const iterations: GraphicalIterData[] = [];
     const result: GraphicalResult = {};
 
@@ -55,18 +59,13 @@ export default class GraphicalMethod extends RootOfEquation {
       if(f.evaluate({ x: i}) * f.evaluate({ x: i+1}) < 0) isSolveable = true;
     }
 
-    let plotStep = (this.xEnd - this.xStart) / 100;
-    for(let i = this.xStart; i <= this.xEnd; i+=plotStep) {
-      this.points.push({x: i, y: f.evaluate({x: i})})
-    }
-
     if(isSolveable) {
-      while(this.iter < maxIter) {
+      while(this.iter < this.maxIter) {
         this.iter++;
 
         y = f.evaluate({ x });
 
-        this.pointsCal.push({x , y});
+        this.calPoints.push({x , y});
         iterations.push({
           x, y, iter: this.iter
         })
@@ -85,7 +84,13 @@ export default class GraphicalMethod extends RootOfEquation {
 
         temp = y;
       }
-      result.ans = { x, y, iter: this.iter, iterations, points: this.points, pointsCal: this.pointsCal }
+
+      let plotStep = (this.xEnd - this.xStart) / 100;
+      for(let i = this.xStart; i <= this.xEnd; i+=plotStep) {
+        this.points.push({x: i, y: f.evaluate({x: i})})
+      }
+      
+      result.ans = { x, y, iter: this.iter, iterations, points: this.points, calPoints: this.calPoints }
     } else {
       result.error = `Can't find root in range(${this.xStart}, ${this.xEnd})`
     }

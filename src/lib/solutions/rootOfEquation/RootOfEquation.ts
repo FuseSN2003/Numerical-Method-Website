@@ -3,17 +3,15 @@ import { EvalFunction } from "mathjs";
 
 export default abstract class RootOfEquation {
   protected fx: string;
-  protected xStart: number;
-  protected xEnd: number;
   protected epsilon: number;
   protected iter = 0;
   protected points: Point[] = [];
-  protected pointsCal: Point[] = [];
+  protected calPoints: Point[] = [];
+  protected tolerance = 0;
+  protected maxIter = 1000;
 
-  constructor(fx: string, xStart: number, xEnd: number, epsilon: number) {
+  constructor(fx: string, epsilon: number) {
     this.fx = fx;
-    this.xStart = xStart;
-    this.xEnd = xEnd;
     this.epsilon = epsilon;
   }
 

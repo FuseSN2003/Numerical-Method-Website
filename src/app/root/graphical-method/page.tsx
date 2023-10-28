@@ -1,7 +1,6 @@
-import React from "react";
 import PageLayout from "@/components/PageLayout";
-import GraphicalMethod from "./GraphicalMethod"; 
 import Solutions from "@/lib/solutions/Solutions";
+import Graphical from "./Graphical";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,7 +13,7 @@ export default async function GraphicalMethodPage() {
 
   return (
     <PageLayout title="Graphical Method">
-      <GraphicalMethod question={data.map((data: any) => data.form)}/>
+      <Graphical question={data.map((data: any) => data.form)}/>
     </PageLayout>
   );
 }

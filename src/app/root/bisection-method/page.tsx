@@ -1,8 +1,7 @@
 import PageLayout from "@/components/PageLayout";
-import { Metadata } from "next";
-import React from "react";
-import BisectionMethod from "./BisectionMethod";
 import Solutions from "@/lib/solutions/Solutions";
+import Bisection from "./Bisection";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Bisection Method",
@@ -14,7 +13,7 @@ export default async function BisectionMethodPage() {
   
   return (
     <PageLayout title="Bisection Method">
-      <BisectionMethod question={data.map((data: any) => data.form)}/>
+      <Bisection question={data.map((data: any) => data.form)}/>
     </PageLayout>
   );
 }
