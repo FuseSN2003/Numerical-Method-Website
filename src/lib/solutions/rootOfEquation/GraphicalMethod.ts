@@ -1,6 +1,6 @@
-import { EvalFunction, abs, floor, log, pow } from "mathjs";
-import { RootOfEquation } from "./RootOfEquation";
+import { EvalFunction, abs, compile, floor, log, pow } from "mathjs";
 import { Point } from "@/types";
+import RootOfEquation from "./RootOfEquation";
 
 export interface GraphicalInput {
   fx: string
@@ -21,6 +21,7 @@ export interface GraphicalResult {
     y: number
     iter: number
     points: Point[]
+    pointsCal: Point[]
     iterations: GraphicalIterData[]
   }
   error?: string
@@ -28,8 +29,8 @@ export interface GraphicalResult {
 
 export default class GraphicalMethod extends RootOfEquation {
   
-  constructor(f: EvalFunction, xStart: number, xEnd: number, epsilon: number) {
-    super(f, xStart, xEnd, epsilon);
+  constructor(fx: string, xStart: number, xEnd: number, epsilon: number) {
+    super(fx, xStart, xEnd, epsilon);
   }
 
   private calcultateStep() {
@@ -39,31 +40,35 @@ export default class GraphicalMethod extends RootOfEquation {
   }
 
   public solve(): GraphicalResult {
+    const f = compile(this.fx);
     const maxIter = 1000;
     const iterations: GraphicalIterData[] = [];
-    const points: Point[] = [];
     const result: GraphicalResult = {};
 
     let step = this.calcultateStep();
-    let iter = 0;
     let x = this.xStart;
-    let temp = this.f.evaluate({ x });
+    let temp = f.evaluate({ x });
     let y;
     let isSolveable = false;
     
     for(let i = this.xStart; i < this.xEnd; i++) {
-      if(this.f.evaluate({ x: i}) * this.f.evaluate({ x: i+1}) < 0) isSolveable = true;
+      if(f.evaluate({ x: i}) * f.evaluate({ x: i+1}) < 0) isSolveable = true;
+    }
+
+    let plotStep = (this.xEnd - this.xStart) / 100;
+    for(let i = this.xStart; i <= this.xEnd; i+=plotStep) {
+      this.points.push({x: i, y: f.evaluate({x: i})})
     }
 
     if(isSolveable) {
-      while(iter < maxIter) {
-        iter++;
+      while(this.iter < maxIter) {
+        this.iter++;
 
-        y = this.f.evaluate({ x });
-        points.push({x , y});
+        y = f.evaluate({ x });
 
+        this.pointsCal.push({x , y});
         iterations.push({
-          x, y, iter
+          x, y, iter: this.iter
         })
 
         if(abs(y) < this.epsilon) break;
@@ -71,7 +76,7 @@ export default class GraphicalMethod extends RootOfEquation {
         if(temp * y < 0) {
           x -= step;
           step /= 10;
-          y = this.f.evaluate({ x });
+          y = f.evaluate({ x });
         }
 
         if(x == this.xEnd) break;
@@ -80,7 +85,7 @@ export default class GraphicalMethod extends RootOfEquation {
 
         temp = y;
       }
-      result.ans = { x, y, iter, iterations, points }
+      result.ans = { x, y, iter: this.iter, iterations, points: this.points, pointsCal: this.pointsCal }
     } else {
       result.error = `Can't find root in range(${this.xStart}, ${this.xEnd})`
     }

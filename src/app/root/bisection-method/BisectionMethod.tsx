@@ -9,25 +9,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraphicalInput, GraphicalResult } from "@/lib/solutions/rootOfEquation/GraphicalMethod";
+import { BisectionInput, BisectionResult } from "@/lib/solutions/rootOfEquation/BisectionMethod";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useMemo, useState } from "react";
-import { InlineMath } from "react-katex"
+import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { InlineMath } from "react-katex";
 
 const initialForm = {
   fx: "",
-  xStart: 0,
-  xEnd: 0,
+  xl: 0,
+  xr: 0,
   epsilon: 1e-6,
 }
 
-interface GraphicalMethodProps {
-  question: GraphicalInput[]
+interface BisectionMethodProps {
+  question: BisectionInput[]
 }
 
-export default function GraphicalMethod({ question }: GraphicalMethodProps) {
-  const [form, setForm] = useState<GraphicalInput>(initialForm);
-  const [result, setResult] = useState<GraphicalResult>();
+export default function BisectionMethod({ question }: BisectionMethodProps) {
+  const [form, setForm] = useState<BisectionInput>(initialForm);
+  const [result, setResult] = useState<BisectionResult>();
   const [alertDialog, setAlertDialog] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,7 +50,7 @@ export default function GraphicalMethod({ question }: GraphicalMethodProps) {
 
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/root/graphical`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/root/bisection`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function GraphicalMethod({ question }: GraphicalMethodProps) {
     }
   }
 
-  const setSolution = (dataForm: GraphicalInput) => {
+  const setSolution = (dataForm: BisectionInput) => {
     setForm(dataForm);
     setOpenDialog(false);
   }
@@ -81,8 +81,8 @@ export default function GraphicalMethod({ question }: GraphicalMethodProps) {
       <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
         <div className="flex flex-col">
           <InlineMath math={`f(x) = ${data.fx}`}/>
-          <InlineMath math={`x_{start} = ${data.xStart}`}/>
-          <InlineMath math={`x_{end} = ${data.xEnd}`}/>
+          <InlineMath math={`x_{l} = ${data.xl}`}/>
+          <InlineMath math={`x_{r} = ${data.xr}`}/>
           <InlineMath math={`epsilon(\\epsilon) = ${data.epsilon}`}/>
         </div>
         <div className="flex items-center justify-end">
@@ -98,16 +98,16 @@ export default function GraphicalMethod({ question }: GraphicalMethodProps) {
         <form onSubmit={cal} className="w-full flex flex-col gap-8">
           <div className="w-full grid items-center gap-1.5">
             <Label htmlFor="fx"><InlineMath math={`f(x)`}/></Label>
-            <Input onChange={handleChange} type="text" id="fx" placeholder="43x-180" value={form.fx}/>
+            <Input onChange={handleChange} type="text" id="fx" placeholder="x^4-13" value={form.fx}/>
           </div>
           <div className="grid md:grid-cols-3 w-full items-center gap-4">
             <div className="grid w-full items-center gap-1.5">
-              <Label htmlFor="xStart"><InlineMath math={`x_{start}`} /></Label>
-              <Input onChange={handleChange} type="number" id="xStart" value={form.xStart} step="0.000001"/>
+              <Label htmlFor="xl"><InlineMath math={`x_{l}`} /></Label>
+              <Input onChange={handleChange} type="number" id="xl" value={form.xl} step="0.000001"/>
             </div>
             <div className="grid w-full items-center gap-1.5">
-              <Label htmlFor="xEnd"><InlineMath math={`x_{end}`} /></Label>
-              <Input onChange={handleChange} type="number" id="xEnd" value={form.xEnd} step="0.000001"/>
+              <Label htmlFor="xr"><InlineMath math={`x_{r}`} /></Label>
+              <Input onChange={handleChange} type="number" id="xr" value={form.xr} step="0.000001"/>
             </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="epsilon"><InlineMath math={`Epsilon (\\epsilon)`} /></Label>
@@ -144,8 +144,8 @@ export default function GraphicalMethod({ question }: GraphicalMethodProps) {
 
       <RootOfEquationGraph
         points={result?.ans?.points}
+        ansPoint={result?.ans && [{x: result.ans.xm, y: result.ans.fxm}]}
         pointsCal={result?.ans?.pointsCal}
-        ansPoint={result?.ans && [{x: result.ans.x, y: result.ans.y}]}
         loading={loading}
       />
 
@@ -161,14 +161,22 @@ export default function GraphicalMethod({ question }: GraphicalMethodProps) {
                 <DisplayResult>
                   <h3 className="text-xl font-bold underline">Answer: </h3>
                   <p>Total iterations: {result.ans.iter}</p>
-                  <InlineMath math={`x = ${result.ans.x}`} />
+                  <InlineMath math={`x = ${result.ans.xm}`} />
                 </DisplayResult>
                 {result.ans.iterations.map((data, index) => (
-                  data.iter <= 30 && (
+                  data.iter <= 4 && (
                     <DisplayResult key={index}>
                       <h4 className="text-lg font-semibold">Iteration {data.iter}:</h4>
-                      <InlineMath math={`x_{${data.iter}} = ${data.x}`} />
-                      <InlineMath math={`f(x) = f(${data.x}) = ${data.y}`} />
+                      <InlineMath math={`x_{l} = ${data.xl}`} />
+                      <InlineMath math={`x_{r} = ${data.xr}`} />
+                      <InlineMath math={`x_{m} = \\frac{xl + xr}{2} = ${data.xm}`} />
+                      <InlineMath math={`f(x_{m}) = ${data.fxm}`} />
+                      <InlineMath
+                        math={`
+                          tolerance = \\left|\\frac{${data.xm} - ${data.xmOld}}{${data.xm}}\\right| * 100
+                          = ${data.tolerance}\\%
+                        `}
+                      />
                     </DisplayResult>
                   )
                 ))}
@@ -181,14 +189,16 @@ export default function GraphicalMethod({ question }: GraphicalMethodProps) {
                       <TableHead><InlineMath math={`Iteration`}/></TableHead>
                       <TableHead><InlineMath math={`x_{i}`}/></TableHead>
                       <TableHead><InlineMath math={`fx(x_{i})`}/></TableHead>
+                      <TableHead><InlineMath math={`tolerance(\\%)`}/></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {result.ans.iterations.map((data, index) => (
                       <TableRow key={index}>
                         <TableCell><InlineMath math={`${data.iter}`}/></TableCell>
-                        <TableCell><InlineMath math={`${data.x}`}/></TableCell>
-                        <TableCell><InlineMath math={`${data.y}`}/></TableCell>
+                        <TableCell><InlineMath math={`${data.xm}`}/></TableCell>
+                        <TableCell><InlineMath math={`${data.fxm}`}/></TableCell>
+                        <TableCell><InlineMath math={`${data.tolerance}`}/></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

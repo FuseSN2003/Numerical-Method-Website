@@ -1,3 +1,4 @@
+import { floor, max } from "mathjs";
 import prisma from "../prisma";
 
 export default class Solutions {
@@ -38,14 +39,20 @@ export default class Solutions {
   }
 
   static async getData(method: string) {
-    const result = await prisma.inputData.findMany({
+    const solutionCount = await prisma.inputData.count({
       where: {
         method
-      },
-      orderBy: {
-        createdAt: "desc",
+      }
+    })
+
+    const skip = max(0, floor(Math.random() * solutionCount) - 10);
+
+    const result = await prisma.inputData.findMany({
+      where: {
+        method,
       },
       take: 10,
+      skip: skip
     })
     
     return result;

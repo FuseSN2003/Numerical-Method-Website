@@ -1,5 +1,5 @@
 import Solutions from "@/lib/solutions/Solutions";
-import GraphicalMethod, { GraphicalResult } from "@/lib/solutions/rootOfEquation/GraphicalMethod";
+import BisectionMethod, { BisectionResult } from "@/lib/solutions/rootOfEquation/BisectionMethod";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -9,17 +9,17 @@ export async function POST(req: Request) {
     const form = await req.json();
 
     const fx = form.fx.toLowerCase()
-    const xStart = Number(form.xStart);
-    const xEnd = Number(form.xEnd);
+    const xl = Number(form.xl);
+    const xr = Number(form.xr);
     const epsilon = Number(form.epsilon);
     
-    const result: GraphicalResult = new GraphicalMethod(fx, xStart, xEnd, epsilon).solve();
+    const result: BisectionResult = new BisectionMethod(fx, xl, xr, epsilon).solve();
 
     if(result.ans) {
-      await Solutions.addData("Graphical Method", {
-        fx: form.fx,
-        xStart,
-        xEnd,
+      await Solutions.addData("Bisection Method", {
+        fx,
+        xl,
+        xr,
         epsilon,
       });
     }
