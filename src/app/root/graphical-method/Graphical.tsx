@@ -144,7 +144,6 @@ export default function Graphical({ question }: GraphicalProps) {
 
       <RootOfEquationGraph
         points={result?.ans?.points}
-        calPoints={result?.ans?.calPoints}
         ansPoint={result?.ans && [{x: result.ans.x, y: result.ans.y}]}
         loading={loading}
       />

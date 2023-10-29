@@ -26,7 +26,6 @@ export interface FalsePositionResult {
     iter: number
     iterations: FalsePositionIterData[]
     points: Point[]
-    calPoints: Point[]
   }
   error?: string
 }
@@ -64,7 +63,7 @@ export default class FalsePositionMethod extends RootOfEquation {
 
       this.tolerance = abs((x - xOld) / x) * 100;
 
-      this.calPoints.push({x, y:fx});
+      this.points.push({x, y:fx});
       iterations.push({
         xl, xr, x, iter: this.iter, tolerance: this.tolerance, xOld, fx
       })
@@ -75,14 +74,14 @@ export default class FalsePositionMethod extends RootOfEquation {
         xl = x;
       }
 
+      if(this.iter > this.maxIter) {
+        result.error = `Max iteration at iteration: ${this.iter-1}`
+        return result;
+      }
+
     } while(this.tolerance > this.epsilon)
 
-    const step = (this.xEnd - this.xStart) / 100;
-    for(let i = this.xStart; i <= this.xEnd / 2; i+=step) {
-      this.points.push({x: i, y: f.evaluate({x: i})})
-    }
-
-    result.ans = { x, fx: f.evaluate({x}), iter: this.iter, iterations, points: this.points, calPoints: this.calPoints }
+    result.ans = { x, fx: f.evaluate({x}), iter: this.iter, iterations, points: this.points }
 
     return result;
   }

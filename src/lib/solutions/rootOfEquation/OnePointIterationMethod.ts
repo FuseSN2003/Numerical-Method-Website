@@ -39,6 +39,7 @@ export default class OnePointIterationMethod extends RootOfEquation {
     const f = compile(this.fx);
     const result: OnePointResult = {};
     const iterations: OnePointIterData[] = [];
+    const calPoints: Point[] = []
     
     let x = this.x0;
     let xOld: number;
@@ -49,7 +50,7 @@ export default class OnePointIterationMethod extends RootOfEquation {
 
       x = f.evaluate({x});
 
-      this.calPoints.push({x: xOld, y: x});
+      calPoints.push({x: xOld, y: x});
       
       this.tolerance = abs((x - xOld) / x) * 100;
 
@@ -62,12 +63,17 @@ export default class OnePointIterationMethod extends RootOfEquation {
         x, xOld, iter: this.iter, tolerance: this.tolerance
       })
 
+      if(this.iter > this.maxIter) {
+        result.error = `Max iteration at iteration: ${this.iter-1}`
+        return result;
+      }
+
     } while (this.tolerance > this.epsilon);
 
     this.points.push({x: this.x0, y: this.x0})
     this.points.push({x: x, y: x})
 
-    result.ans = { x, xOld, iter: this.iter, iterations, points: this.points, calPoints: this.calPoints }
+    result.ans = { x, xOld, iter: this.iter, iterations, points: this.points, calPoints }
 
     return result;
   }

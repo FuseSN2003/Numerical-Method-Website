@@ -6,7 +6,6 @@ export default abstract class RootOfEquation {
   protected epsilon: number;
   protected iter = 0;
   protected points: Point[] = [];
-  protected calPoints: Point[] = [];
   protected tolerance = 0;
   protected maxIter = 1000;
 

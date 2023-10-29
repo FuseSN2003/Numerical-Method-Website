@@ -11,9 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NewtonRaphsonInput, NewtonRaphsonResult } from "@/lib/solutions/rootOfEquation/NewtonRaphsonMethod";
-import { OnePointInput, OnePointResult } from "@/lib/solutions/rootOfEquation/OnePointIterationMethod";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { InlineMath } from "react-katex";
 
 const initialForm = {
@@ -130,7 +129,6 @@ export default function NewtonRaphson({ question }: NewtonRaphsonProps) {
       <RootOfEquationGraph
         points={result?.ans?.points}
         ansPoint={result?.ans && [{x: result.ans.x, y: result.ans.y}]}
-        calPoints={result?.ans?.calPoints}
         loading={loading}
       />
 

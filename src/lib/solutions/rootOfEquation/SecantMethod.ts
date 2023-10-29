@@ -27,7 +27,6 @@ export interface SecantResult {
     iter: number
     iterations: SecantIterData[]
     points: Point[]
-    calPoints: Point[]
   }
   error?: string
 }
@@ -61,21 +60,22 @@ export default class SecantMethod extends RootOfEquation {
       fx1 = f.evaluate({x: x1});
       fxi = f.evaluate({x: xi});
 
-      this.calPoints.push({x: xi, y: fxi})
+      this.points.push({x: xi, y: fxi})
       iterations.push({
         xi, x1, x0, iter: this.iter, tolerance: this.tolerance, fx0 ,fx1, fxi
       })
 
       x0 = x1;
       x1 = xi;
+
+      if(this.iter > this.maxIter) {
+        result.error = `Max iteration at iteration: ${this.iter-1}`
+        return result;
+      }
+      
     } while(this.tolerance > this.epsilon)
 
-    let step = this.x0 / 10;
-    for(let i = xi-this.x0; i < xi+this.x0; i+=step) {
-      this.points.push({x: i, y: f.evaluate({x: i})})
-    }
-
-    result.ans = { xi, fxi: f.evaluate({x: xi}), iter: this.iter, iterations, points: this.points, calPoints: this.calPoints}
+    result.ans = { xi, fxi: f.evaluate({x: xi}), iter: this.iter, iterations, points: this.points }
     
     return result;
   }

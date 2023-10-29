@@ -9,10 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BisectionInput, BisectionResult } from "@/lib/solutions/rootOfEquation/BisectionMethod";
 import { SecantInput, SecantResult } from "@/lib/solutions/rootOfEquation/SecantMethod";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { InlineMath } from "react-katex";
 
 const initialForm = {
@@ -146,7 +145,6 @@ export default function Secant({ question }: SecantProps) {
       <RootOfEquationGraph
         points={result?.ans?.points}
         ansPoint={result?.ans && [{x: result.ans.xi, y: result.ans.fxi}]}
-        calPoints={result?.ans?.calPoints}
         loading={loading}
       />
 

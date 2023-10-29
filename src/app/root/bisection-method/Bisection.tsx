@@ -11,7 +11,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BisectionInput, BisectionResult } from "@/lib/solutions/rootOfEquation/BisectionMethod";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { InlineMath } from "react-katex";
 
 const initialForm = {
@@ -55,7 +55,7 @@ export default function Bisection({ question }: BisectionProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       })
 
       const data = await res.json();
@@ -145,7 +145,6 @@ export default function Bisection({ question }: BisectionProps) {
       <RootOfEquationGraph
         points={result?.ans?.points}
         ansPoint={result?.ans && [{x: result.ans.xm, y: result.ans.fxm}]}
-        calPoints={result?.ans?.calPoints}
         loading={loading}
       />
 

@@ -26,7 +26,6 @@ export interface BisectionResult {
     iter: number
     iterations: BisectionIterData[]
     points: Point[]
-    calPoints: Point[]
   }
   error?: string
 }
@@ -64,7 +63,7 @@ export default class BisectionMethod extends RootOfEquation {
       fxm = f.evaluate({x: xm});
       this.tolerance = abs((xm - xmOld) / xm) * 100;
 
-      this.calPoints.push({x: xm, y: fxm});
+      this.points.push({x: xm, y: fxm});
       iterations.push({
         xl, xr, xm, iter: this.iter, tolerance: this.tolerance, xmOld, fxm
       })
@@ -75,14 +74,14 @@ export default class BisectionMethod extends RootOfEquation {
         xl = xm;
       }
 
+      if(this.iter > this.maxIter) {
+        result.error = `Max iteration at iteration: ${this.iter-1}`
+        return result;
+      }
+
     } while (this.tolerance > this.epsilon)
 
-    const step = (this.xEnd - this.xStart) / 100;
-    for(let i = this.xStart; i <= this.xEnd / 2; i+=step) {
-      this.points.push({x: i, y: f.evaluate({x: i})})
-    }
-
-    result.ans = {xm, fxm, iter: this.iter, iterations, points: this.points, calPoints: this.calPoints}
+    result.ans = { xm, fxm, iter: this.iter, iterations, points: this.points }
 
     return result;
   }

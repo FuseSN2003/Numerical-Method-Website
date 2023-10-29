@@ -24,7 +24,6 @@ export interface NewtonRaphsonResult {
     iter: number
     iterations: NewtonRaphsonIterData[]
     points: Point[]
-    calPoints: Point[]
     fPrime: string
   }
   error?: string
@@ -58,21 +57,21 @@ export default class NewtonRaphsonMethod extends RootOfEquation {
       xNew = x - (f.evaluate({x: x}) / fPrime.evaluate({x: x}))
       this.tolerance = abs((xNew - x) / xNew) * 100;
 
-      this.calPoints.push({x, y: f.evaluate({x: x})});
+      this.points.push({x, y: f.evaluate({x})});
       iterations.push({
         xNew, xOld: x, iter: this.iter, tolerance: this.tolerance, fx: f.evaluate({x: x}), fPrimeX: fPrime.evaluate({x: x})
       })
 
       x = xNew;
 
-    } while (this.tolerance > this.epsilon);
-    
-    let step = x/10;
-    for(let i = x-this.x0; i <= x+this.x0; i+=step) {
-      this.points.push({x: i, y: f.evaluate({x: i})})
-    }
+      if(this.iter > this.maxIter) {
+        result.error = `Max iteration at iteration: ${this.iter-1}`
+        break;
+      }
 
-    result.ans = { x, y: f.evaluate({x}), iter: this.iter, iterations, fPrime: fPrime.toString(), points: this.points, calPoints: this.calPoints }
+    } while (this.tolerance > this.epsilon);
+
+    result.ans = { x, y: f.evaluate({x}), iter: this.iter, iterations, fPrime: fPrime.toString(), points: this.points }
     
     return result;
   }

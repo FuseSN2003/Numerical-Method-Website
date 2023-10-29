@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     
     const result: GraphicalResult = new GraphicalMethod(fx, xStart, xEnd, epsilon).solve();
 
-    if(result.ans) {
+    if(!result.error) {
       await Solutions.addData("Graphical Method", {
         fx: form.fx,
         xStart,

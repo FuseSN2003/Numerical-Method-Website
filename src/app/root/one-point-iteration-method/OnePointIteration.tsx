@@ -11,7 +11,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OnePointInput, OnePointResult } from "@/lib/solutions/rootOfEquation/OnePointIterationMethod";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { InlineMath } from "react-katex";
 
 const initialForm = {

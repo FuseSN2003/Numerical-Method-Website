@@ -6,12 +6,11 @@ const Plotly = dynamic(() => import("react-plotly.js"), { ssr: false, })
 
 interface RootOfEquationGraphProps {
   points: Point[] | undefined
-  calPoints: Point[] | undefined
   ansPoint: Point[] | undefined
   loading: boolean
 }
 
-export default function RootOfEquationGraph({ points, calPoints, ansPoint, loading }: RootOfEquationGraphProps) {
+export default function RootOfEquationGraph({ points, ansPoint, loading }: RootOfEquationGraphProps) {
   return (
     <>
       <div className="w-full min-h-[450px] flex flex-col py-8 px-12 border rounded-lg shadow-md bg-white overflow-x-auto">
@@ -26,20 +25,9 @@ export default function RootOfEquationGraph({ points, calPoints, ansPoint, loadi
               {
                 x: points?.map((value) => value.x),
                 y: points?.map((value) => value.y),
-                mode: "lines",
-                line: { color: "red" },
-                name: "f(x)",
-                transforms: [
-                  {
-                    type: "sort",
-                  }
-                ]
-              },
-              {
-                x: calPoints?.map((value) => value.x),
-                y: calPoints?.map((value) => value.y),
-                mode: "markers",
+                mode: "lines+markers",
                 marker: { color: "blue" },
+                line: { color: "red"},
                 name: "f(xi)",
                 transforms: [
                   {
@@ -52,7 +40,7 @@ export default function RootOfEquationGraph({ points, calPoints, ansPoint, loadi
                 y: ansPoint?.map((value) => value.y),
                 mode: "markers",
                 name: "Root x",
-                marker: { color: "green", size: 10 }
+                marker: { color: "green", size: 12 }
               }
             ]}
             config={{

@@ -1,4 +1,4 @@
-import { EvalFunction, abs, compile, floor, log, pow } from "mathjs";
+import { abs, compile, floor, log, pow } from "mathjs";
 import { Point } from "@/types";
 import RootOfEquation from "./RootOfEquation";
 
@@ -21,7 +21,6 @@ export interface GraphicalResult {
     y: number
     iter: number
     points: Point[]
-    calPoints: Point[]
     iterations: GraphicalIterData[]
   }
   error?: string
@@ -60,12 +59,12 @@ export default class GraphicalMethod extends RootOfEquation {
     }
 
     if(isSolveable) {
-      while(this.iter < this.maxIter) {
+      while(true) {
         this.iter++;
 
         y = f.evaluate({ x });
 
-        this.calPoints.push({x , y});
+        this.points.push({x , y});
         iterations.push({
           x, y, iter: this.iter
         })
@@ -83,14 +82,13 @@ export default class GraphicalMethod extends RootOfEquation {
         x += step;
 
         temp = y;
-      }
 
-      let plotStep = (this.xEnd - this.xStart) / 100;
-      for(let i = this.xStart; i <= this.xEnd; i+=plotStep) {
-        this.points.push({x: i, y: f.evaluate({x: i})})
+        if(this.iter > this.maxIter) {
+          result.error = `Max iteration at iteration: ${this.iter-1}`
+          return result;
+        }
       }
-      
-      result.ans = { x, y, iter: this.iter, iterations, points: this.points, calPoints: this.calPoints }
+      result.ans = { x, y, iter: this.iter, iterations, points: this.points }
     } else {
       result.error = `Can't find root in range(${this.xStart}, ${this.xEnd})`
     }

@@ -11,7 +11,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FalsePositionInput, FalsePositionResult } from "@/lib/solutions/rootOfEquation/FalsePositionMethod";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { InlineMath } from "react-katex";
 
 const initialForm = {
@@ -145,7 +145,6 @@ export default function FalsePosition({ question }: FalsePositionProps) {
       <RootOfEquationGraph
         points={result?.ans?.points}
         ansPoint={result?.ans && [{x: result.ans.x, y: result.ans.fx}]}
-        calPoints={result?.ans?.calPoints}
         loading={loading}
       />
 
