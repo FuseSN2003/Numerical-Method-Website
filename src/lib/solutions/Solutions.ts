@@ -55,20 +55,11 @@ export default class Solutions {
   }
 
   static async getData(method: string) {
-    const solutionCount = await prisma.inputData.count({
-      where: {
-        method
-      }
-    })
-
-    const skip = max(0, floor(Math.random() * solutionCount) - 10);
-
     const result = await prisma.inputData.findMany({
       where: {
         method,
       },
       take: 10,
-      skip: skip,
       orderBy: {
         createdAt: "desc"
       }
