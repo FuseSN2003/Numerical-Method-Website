@@ -54,7 +54,7 @@ export default function SingleTrapezoidalRule({ question }: SingleTrapezoidalRul
             <>
               <BlockMath
                 math={`\\begin{align*} 
-                  \\int_{${result.ans.a}}^{${result.ans.b}}${result.ans.fx}\\\tdx &= ${result.ans.integral} \\big|_{${result.ans.a}}^{${result.ans.b}} \\\\
+                  \\int_{${result.ans.a}}^{${result.ans.b}}(${result.ans.fx})\\\tdx &= (${result.ans.integral})\\\t \\big|_{${result.ans.a}}^{${result.ans.b}} \\\\
                   &= ${result.ans.trueIntegral} \\\\
                 \\end{align*}`}
               />

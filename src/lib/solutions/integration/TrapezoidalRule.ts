@@ -45,12 +45,12 @@ export default class TrapezoidalRule extends Integration {
     const fxa = f.evaluate({ x: this.a });
     const fxb = f.evaluate({ x: this.b });
 
-    const I = (this.h / 2) * (fxb - fxa);
+    const approxI = (this.h / 2) * (fxb - fxa);
 
-    this.tolerance = abs((this.trueIntegral - I) / this.trueIntegral) * 100;
+    this.tolerance = abs((this.trueIntegral - approxI) / this.trueIntegral) * 100;
 
     result.ans = {
-      approxI: I,
+      approxI,
       trueIntegral: this.trueIntegral,
       tolerance: this.tolerance,
       a: this.a,
@@ -78,12 +78,10 @@ export default class TrapezoidalRule extends Integration {
 
     const approxI = this.h * sum;
 
-    this.tolerance = abs((this.trueIntegral - approxI) / this.trueIntegral) * 100;
-
     result.ans = {
       approxI,
       trueIntegral: this.trueIntegral,
-      tolerance: this.tolerance,
+      tolerance: this.getTolerance(approxI),
       a: this.a,
       b: this.b,
       h: this.h,

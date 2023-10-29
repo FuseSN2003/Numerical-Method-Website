@@ -1,28 +1,28 @@
 "use client"
 
-import CompositeIntegrationInput from "@/components/CompositeIntegrationInput";
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
-import { CompositeIntegrationForm } from "@/lib/solutions/integration/Integration"
-import { CompositeTrapezoidalResult } from "@/lib/solutions/integration/TrapezoidalRule";
+import SingleIntegrationInput from "@/components/SingleIntegrationInput"
+import { SingleIntegrationForm } from "@/lib/solutions/integration/Integration"
+import { SingleSimpsonResult } from "@/lib/solutions/integration/SimpsonRule";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
 import { BlockMath } from "react-katex";
 
-interface CompositeTrapezoidalRuleProps {
-  question: CompositeIntegrationForm[]
+interface SingleSimpsonRuleProps {
+  question: SingleIntegrationForm[]
 }
 
-export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoidalRuleProps) {
-  const [result, setResult] = useState<CompositeTrapezoidalResult>();
+export default function SingleSimpsonRule({ question }: SingleSimpsonRuleProps) {
+  const [result, setResult] = useState<SingleSimpsonResult>();
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleCal = async (form: CompositeIntegrationForm) => {
+  const handleCal = async (form: SingleIntegrationForm) => {
     try {
       setLoading(true);
       
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/integration/composite-trapezoidal`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/integration/single-simpson`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoid
       })
       
       const data = await res.json();
-      
+      console.log(data)
       if(res.ok) {
         setResult(data);
       }
@@ -46,7 +46,7 @@ export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoid
 
   return (
     <>
-      <CompositeIntegrationInput cal={handleCal} question={question}/>
+      <SingleIntegrationInput cal={handleCal} question={question}/>
 
       <ResultContainer loading={loading} result={result}>
         <DisplayResult>
@@ -60,19 +60,15 @@ export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoid
               />
               <BlockMath
                 math={`\\begin{align*} 
-                  h &= \\frac{b-a}{n}
-                  = \\frac{${result.ans.a} - ${result.ans.b}}{${result.ans.n}}
+                  h &= \\frac{b-a}{2}
+                  = \\frac{${result.ans.a} - ${result.ans.b}}{2}
                   = ${result.ans.h}
                 \\end{align*}`}
               />
               <BlockMath
                 math={`\\begin{align*} 
-                  x_{i} = a + ih
-                \\end{align*}`}
-              />
-              <BlockMath
-                math={`\\begin{align*} 
-                  I &= \\frac{h}{2}\\big[f(x_{0})+f(x_{n})+2\\sum_{i=1}^{n-1}f(x_{i})\\big] \\\\
+                  I &= \\frac{h}{3} * \\big[f(x_{0})+4f(x_{1})+f(x_{2})\\big] \\\\
+                  &= \\frac{${result.ans.h}}{3} * \\big[f(${result.ans.a})+4f(${result.ans.x1})+f(${result.ans.b})\\big] \\\\
                   &= ${result.ans.approxI}
                 \\end{align*}`}
               />

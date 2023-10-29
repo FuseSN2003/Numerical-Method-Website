@@ -1,4 +1,4 @@
-import { EvalFunction, compile } from 'mathjs';
+import { EvalFunction, abs, compile } from 'mathjs';
 import { integrate } from 'nerdamer';
 import 'nerdamer/Calculus';
 
@@ -22,7 +22,6 @@ export default abstract class Integration {
   protected integral: EvalFunction;
   protected a: number;
   protected b: number;
-  protected n = 0;
   protected h = 0;
   protected tolerance = 0;
 
@@ -38,4 +37,9 @@ export default abstract class Integration {
   abstract single(): any;
 
   abstract composite(n: number): any;
+
+  protected getTolerance(approxI: number) {
+    this.tolerance = abs((approxI - this.trueIntegral) / approxI) * 100;
+    return this.tolerance;
+  }
 }

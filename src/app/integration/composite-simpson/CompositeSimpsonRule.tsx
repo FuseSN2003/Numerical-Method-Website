@@ -4,17 +4,17 @@ import CompositeIntegrationInput from "@/components/CompositeIntegrationInput";
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
 import { CompositeIntegrationForm } from "@/lib/solutions/integration/Integration"
-import { CompositeTrapezoidalResult } from "@/lib/solutions/integration/TrapezoidalRule";
+import { CompositeSimpsonResult } from "@/lib/solutions/integration/SimpsonRule";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
 import { BlockMath } from "react-katex";
 
-interface CompositeTrapezoidalRuleProps {
+interface CompositeSimpsonRuleProps {
   question: CompositeIntegrationForm[]
 }
 
-export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoidalRuleProps) {
-  const [result, setResult] = useState<CompositeTrapezoidalResult>();
+export default function CompositeSimpsonRule({ question }: CompositeSimpsonRuleProps) {
+  const [result, setResult] = useState<CompositeSimpsonResult>();
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -22,7 +22,7 @@ export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoid
     try {
       setLoading(true);
       
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/integration/composite-trapezoidal`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/integration/composite-simpson`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,14 +54,14 @@ export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoid
             <>
               <BlockMath
                 math={`\\begin{align*} 
-                  \\int_{${result.ans.a}}^{${result.ans.b}}(${result.ans.fx})\\\tdx &= (${result.ans.integral})\\\t \\big|_{${result.ans.a}}^{${result.ans.b}} \\\\
+                  \\int_{${result.ans.a}}^{${result.ans.b}}f(x)\\\tdx &= (${result.ans.integral})\\\t \\big|_{${result.ans.a}}^{${result.ans.b}} \\\\
                   &= ${result.ans.trueIntegral} \\\\
                 \\end{align*}`}
               />
               <BlockMath
                 math={`\\begin{align*} 
-                  h &= \\frac{b-a}{n}
-                  = \\frac{${result.ans.a} - ${result.ans.b}}{${result.ans.n}}
+                  h &= \\frac{b-a}{2n}
+                  = \\frac{${result.ans.a} - ${result.ans.b}}{2(${result.ans.n})}
                   = ${result.ans.h}
                 \\end{align*}`}
               />
@@ -72,7 +72,7 @@ export default function CompositeTrapzoidalRule({ question }: CompositeTrapezoid
               />
               <BlockMath
                 math={`\\begin{align*} 
-                  I &= \\frac{h}{2}\\big[f(x_{0})+f(x_{n})+2\\sum_{i=1}^{n-1}f(x_{i})\\big] \\\\
+                  I &= \\frac{h}{3}\\bigg[f(x_{0})+f(x_{n})+4\\sum_{i=1,3,5}^{n-1}f(x_{i})+2\\sum_{i=2,4,6}^{n-1}f(x_{i})\\bigg] \\\\
                   &= ${result.ans.approxI}
                 \\end{align*}`}
               />
