@@ -8,9 +8,19 @@ export const metadata: Metadata = {
   description: "Graphical Method | Numerical Methods",
 };
 
-export default async function GraphicalMethodPage() {
-  const data = await Solutions.getData("Graphical Method");
+const getData = async () => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/get-question`, {
+    next: {
+      revalidate: 10,
+    }
+  })
 
+  return res.json();
+}
+
+export default async function GraphicalMethodPage() {
+  // const data = await Solutions.getData("Graphical Method");
+  const data = await getData();
   return (
     <PageLayout title="Graphical Method">
       <Graphical question={data.map((data: any) => data.form)}/>
