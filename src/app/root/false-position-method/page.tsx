@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "False Position Method | Numerical Methods",
 };
 
-export default async function BisectionMethodPage() {
+export default async function FalsePositionMethodPage() {
   const data = await Solutions.getData("False Position Method");
   
   return (

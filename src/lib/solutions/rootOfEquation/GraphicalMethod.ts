@@ -32,7 +32,7 @@ export default class GraphicalMethod extends RootOfEquation {
   private xStart: number;
   private xEnd: number;
 
-  constructor(fx: string, xStart: number, xEnd: number, epsilon: number) {
+  public constructor(fx: string, xStart: number, xEnd: number, epsilon: number) {
     super(fx, epsilon);
     this.xStart = xStart;
     this.xEnd = xEnd;

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Secant | Numerical Methods",
 };
 
-export default async function BisectionMethodPage() {
+export default async function SecantMethodPage() {
   const data = await Solutions.getData("Secant Method");
   
   return (

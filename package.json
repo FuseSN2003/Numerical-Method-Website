@@ -20,6 +20,7 @@
     "clsx": "^2.0.0",
     "lucide-react": "^0.289.0",
     "mathjs": "^12.0.0",
+    "nerdamer": "^1.1.13",
     "next": "14.0.0",
     "plotly.js": "^2.27.0",
     "prisma": "^5.5.2",

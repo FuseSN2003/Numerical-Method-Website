@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Newton-Raphson Method | Numerical Methods",
 };
 
-export default async function BisectionMethodPage() {
+export default async function NewtonRaphsonMethodPage() {
   const data = await Solutions.getData("Newton-Raphson Method");
   
   return (

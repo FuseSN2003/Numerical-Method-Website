@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "One-Point Iteration Method | Numerical Methods",
 };
 
-export default async function BisectionMethodPage() {
+export default async function OnePointIterationMethodPage() {
   const data = await Solutions.getData("One-Point Iteration Method");
   
   return (

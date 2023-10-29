@@ -35,10 +35,10 @@ export const extrapolation: MenuDataType[] = [
 ]
 
 export const integration: MenuDataType[] = [
-  { label: "Single Trapezoidal Rule", link: "/integration/single-trapezoidal-rule" },
-  { label: "Composite Trapezoidal Rule", link: "/integration/composite-trapezoidal-rule" },
-  { label: "Single Simpson's Rule", link: "/integration/single-simpson-rule" },
-  { label: "Composite Simpson's Rule", link: "/integration/composite-simpson-rule" },
+  { label: "Single Trapezoidal Rule", link: "/integration/single-trapezoidal" },
+  { label: "Composite Trapezoidal Rule", link: "/integration/composite-trapezoidal" },
+  { label: "Single Simpson's Rule", link: "/integration/single-simpson" },
+  { label: "Composite Simpson's Rule", link: "/integration/composite-simpson" },
 ]
 
 export const differential: MenuDataType[] = [

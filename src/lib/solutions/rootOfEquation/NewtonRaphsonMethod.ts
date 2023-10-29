@@ -34,7 +34,7 @@ export default class NewtonRaphsonMethod extends RootOfEquation {
   
   private x0: number;
 
-  constructor(fx: string, x0: number, epsilon: number) {
+  public constructor(fx: string, x0: number, epsilon: number) {
     super(fx, epsilon);
     this.x0 = x0;
   }

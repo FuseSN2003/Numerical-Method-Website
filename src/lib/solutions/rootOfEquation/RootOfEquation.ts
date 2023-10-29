@@ -10,7 +10,7 @@ export default abstract class RootOfEquation {
   protected tolerance = 0;
   protected maxIter = 1000;
 
-  constructor(fx: string, epsilon: number) {
+  public constructor(fx: string, epsilon: number) {
     this.fx = fx;
     this.epsilon = epsilon;
   }
