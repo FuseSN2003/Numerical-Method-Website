@@ -1,5 +1,6 @@
 import { floor, max } from "mathjs";
 import prisma from "../prisma";
+import { InterpolationForm } from "./interpolation/Interpolation";
 
 export default class Solutions {
 
@@ -16,6 +17,21 @@ export default class Solutions {
         return false;
       }
     }
+    return true;
+  }
+
+  static async areArraysEqual(array1: string[], array2: string[]) {
+    if (array1.length !== array2.length) {
+      return false;
+    }
+
+    // Loop through the elements of the arrays and compare them
+    for (let i = 0; i < array1.length; i++) {
+        if (array1[i] !== array2[i]) {
+            return false;
+        }
+    }
+
     return true;
   }
 
