@@ -72,7 +72,7 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
     }
     
     handleCalculate(form, selectedPointX, selectedPointY, form.targetX)
-  }, [form.pointX, form.pointY, form.selectedPoint, form.targetX, handleCalculate])
+  }, [form, handleCalculate])
 
   const setSolution = (dataForm: InterpolationForm) => {
     setNPoint(dataForm.pointX.length)
