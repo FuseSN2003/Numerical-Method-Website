@@ -94,20 +94,22 @@ export default function SplineInterpolationInput({ handleCalculate, question }: 
   return (
     <>
       <div className="w-full max-w-xs mx-auto flex flex-col gap-6">
-        <div className="w-full flex items-end gap-4">
-          <Button onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
+        <div className="flex items-end mx-auto w-full gap-2">
           <div>
             <Label htmlFor="nPoint">Number of Points</Label>
             <Input id="nPoint" min={1} type="number" value={nPoint} onChange={(e) => setNPoint(Number(e.target.value))} />
           </div>
-          <Button onClick={increaseN} variant="default"><Plus size={16}/></Button>
+          <div className="flex-grow flex gap-1">
+            <Button className="w-full" onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
+            <Button className="w-full" onClick={increaseN} variant="default"><Plus size={16}/></Button>
+          </div>
         </div>
-        <div className="w-full flex items-end gap-4">
-          <div className="w-full">
+        <div className="w-full flex items-end mx-auto gap-2">
+          <div>
             <Label>Target X</Label>
             <Input type="number" value={form.targetX} onChange={(e) => setForm((prevState) => ({ ...prevState, targetX: Number(e.target.value) }))}/>
           </div>
-          <Button onClick={calculate}>Calculate</Button>
+          <Button className="flex-grow" onClick={calculate}>Calculate</Button>
         </div>
         <div>
           <Select defaultValue="linear" value={form.method} onValueChange={(e) => setForm((prevState) => ({ ...prevState, method: e }))}>

@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const result: RegressionResult = new Regression().solve(pointX, pointY, targetX, mOrder);
 
     if(result.ans) {
-      await Solutions.addData("Lagrange Interpolation", {
+      await Solutions.addData("Regression", {
         pointX: form.pointX.map((element: any) => (element === undefined || element === null ? "" : element)),
         pointY: form.pointY.map((element: any) => (element === undefined || element === null ? "" : element)),
         targetX: form.targetX,

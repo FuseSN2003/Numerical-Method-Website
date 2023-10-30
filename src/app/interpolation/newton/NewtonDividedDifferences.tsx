@@ -52,6 +52,7 @@ export default function NewtonDividedDifferences({ question }: NewtonDividedDiff
         {result?.ans && (
           <>
             <DisplayResult>
+              <h3 className="text-xl font-bold underline">Answer: </h3>
               <p>at <InlineMath math={`x = ${result.ans.x}`}/></p>
               <InlineMath math={`f(x) = f(${result.ans.x}) = ${result.ans.y}`}/>
             </DisplayResult>

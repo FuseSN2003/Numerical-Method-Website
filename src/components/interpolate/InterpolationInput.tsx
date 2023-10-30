@@ -107,20 +107,22 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
   return (
     <>
       <div className="w-full max-w-xs mx-auto flex flex-col gap-6">
-        <div className="w-full flex items-end gap-4">
-          <Button onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
+        <div className="flex items-end mx-auto w-full gap-2">
           <div>
             <Label htmlFor="nPoint">Number of Points</Label>
             <Input id="nPoint" min={1} type="number" value={nPoint} onChange={(e) => setNPoint(Number(e.target.value))} />
           </div>
-          <Button onClick={increaseN} variant="default"><Plus size={16}/></Button>
+          <div className="flex-grow flex gap-1">
+            <Button className="w-full" onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
+            <Button className="w-full" onClick={increaseN} variant="default"><Plus size={16}/></Button>
+          </div>
         </div>
-        <div className="w-full flex items-end gap-4">
-          <div className="w-full">
+        <div className="w-full flex items-end mx-auto gap-2">
+          <div>
             <Label>Target X</Label>
             <Input type="number" value={form.targetX} onChange={(e) => setForm((prevState) => ({ ...prevState, targetX: Number(e.target.value) }))}/>
           </div>
-          <Button onClick={calculate}>Calculate</Button>
+          <Button className="flex-grow" onClick={calculate}>Calculate</Button>
         </div>
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogTrigger tabIndex={-1} asChild>
@@ -137,7 +139,7 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
         </Dialog>
       </div>
 
-      <div className="w-fit mx-auto flex flex-col bg-white border p-4 rounded-md shadow-md">
+      <div className="w-full max-w-md mx-auto flex flex-col bg-white border p-4 rounded-md shadow-md">
         {Array.from({ length: nPoint }).map((_, i) => (
           <div key={i} className="flex items-center p-1 space-x-2">
             <p>{i + 1}.</p>

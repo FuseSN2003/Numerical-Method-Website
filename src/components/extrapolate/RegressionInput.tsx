@@ -9,6 +9,7 @@ import { Minus, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { InlineMath } from "react-katex";
 import { Separator } from "../ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 interface RegressionInputProps {
   question: RegressionForm[]
@@ -69,6 +70,26 @@ export default function RegressionInput({question, handleCalculate}: RegressionI
       <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
         <div className="flex flex-col gap-1">
           <InlineMath math={`n = ${data.pointX.length}`} />
+          <InlineMath math={`m = ${data.mOrder}`} />
+          <InlineMath math={`find \\\t x = ${data.targetX}`} />
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead><InlineMath math={`i`}/></TableHead>
+                <TableHead><InlineMath math={`x_i`}/></TableHead>
+                <TableHead><InlineMath math={`f(x_i)`}/></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({length: data.pointX.length}).map((_, indexdata) => (
+                <TableRow key={indexdata}>
+                  <TableCell>{indexdata+1}</TableCell>
+                  <TableCell>{data.pointX[indexdata]}</TableCell>
+                  <TableCell>{data.pointY[indexdata]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
         <div className="flex items-center justify-end">
           <Button onClick={() => setSolution(data)}>Set Solution</Button>
@@ -86,9 +107,9 @@ export default function RegressionInput({question, handleCalculate}: RegressionI
   return (
     <>
       <div className="w-full max-w-xs mx-auto flex flex-col gap-6">
-        <div className="w-full flex items-end gap-4">
+        <div className="w-full flex border items-end gap-1">
           <Button onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
-          <div>
+          <div className="mx-auto">
             <Label htmlFor="nPoint">Number of Points</Label>
             <Input id="nPoint" type="number" min={1} value={nPoint} onChange={(e) => setNPoint(Number(e.target.value))} />
           </div>
@@ -109,7 +130,7 @@ export default function RegressionInput({question, handleCalculate}: RegressionI
           <DialogTrigger tabIndex={-1} asChild>
             <Button className="w-1/2 mx-auto" variant="ghost">Select Example Solution</Button>
           </DialogTrigger>
-          <DialogContent className="h-[60dvh] p-8">
+          <DialogContent className="h-[70dvh] p-8">
             <DialogHeader className="px-4">
               <DialogTitle>Select Solution</DialogTitle>
             </DialogHeader>
@@ -120,7 +141,7 @@ export default function RegressionInput({question, handleCalculate}: RegressionI
         </Dialog>
       </div>
 
-      <div className="w-fit mx-auto flex flex-col bg-white border p-2 rounded-md shadow-md">
+      <div className="w-fit mx-auto flex flex-col bg-white border p-6 rounded-md shadow-md">
         {Array.from({ length: nPoint }).map((_, i) => (
           <div key={i} className="flex items-center p-1 space-x-2">
             <p>{i + 1}.</p>
