@@ -1,7 +1,7 @@
 "use client"
 
 import DisplayResult from "@/components/DisplayResult";
-import InterpolationInput from "@/components/interpolation/InterpolationInput";
+import InterpolationInput from "@/components/interpolate/InterpolationInput";
 import ResultContainer from "@/components/ResultContainer";
 import { InterpolationForm } from "@/lib/solutions/interpolation/Interpolation";
 import { NewtonDividedResult } from "@/lib/solutions/interpolation/NewtonDividedDifferences";

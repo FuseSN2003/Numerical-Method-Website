@@ -2,32 +2,31 @@
 
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
-import SplineInterpolationInput from "@/components/interpolate/SplineInterpolationInput";
-import { SplineInputForm, SplineResult } from "@/lib/solutions/interpolation/SplineInterpolation";
+import RegressionInput from "@/components/extrapolate/RegressionInput";
+import { RegressionForm, RegressionResult } from "@/lib/solutions/extrapolation/Regression";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { InlineMath } from "react-katex";
 
-interface SplineInterpolationProps {
-  question: SplineInputForm[]
+interface RegressionProps {
+  question: RegressionForm[]
 }
 
-export default function SplineInterpolation({ question }: SplineInterpolationProps) {
-
-  const [result, setResult] = useState<SplineResult>();
+export default function Regression({ question }: RegressionProps) {
+  const [result, setResult] = useState<RegressionResult>();
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleCalculate = async (form: SplineInputForm, pointX: number[], pointY: number[], targetX: number, method: string) => {
+  const handleCalculate = async (form: RegressionForm, pointX: number[], pointY: number[], targetX: number, mOrder: number) => {
     try {
       setLoading(true);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/inter/spline`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/extra/regression`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({form, pointX, pointY, targetX, method})
+        body: JSON.stringify({form, pointX, pointY, targetX, mOrder})
       })
       
       const data = await res.json();
@@ -46,7 +45,7 @@ export default function SplineInterpolation({ question }: SplineInterpolationPro
 
   return (
     <>
-      <SplineInterpolationInput question={question} handleCalculate={handleCalculate} />
+      <RegressionInput question={question} handleCalculate={handleCalculate}/>
 
       <ResultContainer result={result} loading={loading}>
         {result?.ans && (
@@ -62,5 +61,5 @@ export default function SplineInterpolation({ question }: SplineInterpolationPro
         )}
       </ResultContainer>
     </>
-  )
+  );
 }

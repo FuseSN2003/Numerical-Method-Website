@@ -1,6 +1,6 @@
 "use client"
 
-import CompositeIntegrationInput from "@/components/integration/CompositeIntegrationInput";
+import CompositeIntegrationInput from "@/components/integrate/CompositeIntegrationInput";
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
 import { CompositeIntegrationForm } from "@/lib/solutions/integration/Integration"

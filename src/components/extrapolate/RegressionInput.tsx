@@ -1,37 +1,31 @@
 "use client"
 
+import { RegressionForm } from "@/lib/solutions/extrapolation/Regression";
 import { useCallback, useMemo, useState } from "react";
+import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { Minus, Plus } from "lucide-react";
-import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { InterpolationForm } from "@/lib/solutions/interpolation/Interpolation";
 import { InlineMath } from "react-katex";
+import { Separator } from "../ui/separator";
 
-interface InterpolationInputProps {
-  handleCalculate: (form: InterpolationForm, pointX: number[], pointY: number[], targetX: number) => void
-  question: InterpolationForm[]
+interface RegressionInputProps {
+  question: RegressionForm[]
+  handleCalculate: (form: RegressionForm, pointX: number[], pointY: number[], targetX: number, mOrder: number) => void
 }
 
-export default function InterpolationInput({ handleCalculate, question }: InterpolationInputProps) {
-  const [nPoint, setNPoint] = useState(3);
-  const [open, setOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [form, setForm] = useState<InterpolationForm>({
+export default function RegressionInput({question, handleCalculate}: RegressionInputProps) {
+  const [nPoint, setNPoint] = useState(3)
+  const [form, setForm] = useState<RegressionForm>({
     pointX: Array(nPoint).fill(''),
     pointY: Array(nPoint).fill(''),
-    targetX: 0,
-    selectedPoint: Array(nPoint).fill(false),
-  })
-
-  const handleCheckboxChange = (index: number) => {
-    const newSelectedPoint = [...form.selectedPoint];
-    newSelectedPoint[index] = !newSelectedPoint[index];
-    setForm(prevForm => ({ ...prevForm, selectedPoint: newSelectedPoint }));
-  }
+    targetX: '0',
+    mOrder: '1',
+  });
+  const [alertMessage, setAlertMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const handlePointXChange = (index: number, value: string) => {
     const newPointX = [...form.pointX];
@@ -46,7 +40,7 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
   }
 
   const increaseN = useCallback(() => {
-      setNPoint((n) => n + 1);
+    setNPoint((n) => n + 1);
   }, []);
 
   const decreaseN = useCallback(() => {
@@ -56,46 +50,25 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
   }, [nPoint]);
 
   const calculate = useCallback(() => {
-    const selectedPointX = form.pointX.filter((_, index) => form.selectedPoint[index]).map((value) => Number(value));;
-    const selectedPointY = form.pointY.filter((_, index) => form.selectedPoint[index]).map((value) => Number(value));;
+    const pointX = form.pointX.map((Number));
+    const pointY = form.pointY.map((Number));
+    const targetX = Number(form.targetX);
+    const mOrder = Number(form.mOrder);
 
-    if(!form.targetX) {
-      setOpen(true);
-      setAlertMessage("Please enter Target X");
-      return;
-    }
-
-    if(selectedPointX.length < 2) {
+    if(mOrder < 1) {
+      setAlertMessage("m order must be at least 1")
       setOpen(true)
-      setAlertMessage("Please check point at least 2 points")
       return;
     }
-    
-    handleCalculate(form, selectedPointX, selectedPointY, form.targetX)
-  }, [form, handleCalculate])
 
-  const setSolution = (dataForm: InterpolationForm) => {
-    setNPoint(dataForm.pointX.length)
-    setForm(dataForm);
-    setOpenDialog(false);
-  }
+    handleCalculate(form, pointX, pointY, targetX, mOrder)
+  }, [form, handleCalculate])
 
   const mappedQuestion = useMemo(() => {
     return question.map((data, index) => (
       <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
         <div className="flex flex-col gap-1">
           <InlineMath math={`n = ${data.pointX.length}`} />
-          <p className="font-bold">Selected Point</p>
-          <div className="flex flex-col gap-4">
-            {data.selectedPoint.map((value, index) => (
-              value && (
-                <div className="flex flex-col">
-                  <InlineMath math={`x_{${index}} = ${data.pointX[index]}`}/>
-                  <InlineMath math={`f_(x{${index}}) = ${data.pointY[index]}`}/>
-                </div>
-              )
-            ))}
-          </div>
         </div>
         <div className="flex items-center justify-end">
           <Button onClick={() => setSolution(data)}>Set Solution</Button>
@@ -104,6 +77,12 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
     ))
   }, [question])
 
+  const setSolution = (dataForm: RegressionForm) => {
+    setNPoint(dataForm.pointX.length)
+    setForm(dataForm);
+    setOpenDialog(false);
+  }
+
   return (
     <>
       <div className="w-full max-w-xs mx-auto flex flex-col gap-6">
@@ -111,17 +90,21 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
           <Button onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
           <div>
             <Label htmlFor="nPoint">Number of Points</Label>
-            <Input id="nPoint" type="number" value={nPoint} onChange={(e) => setNPoint(Number(e.target.value))} />
+            <Input id="nPoint" type="number" min={1} value={nPoint} onChange={(e) => setNPoint(Number(e.target.value))} />
           </div>
           <Button onClick={increaseN} variant="default"><Plus size={16}/></Button>
         </div>
         <div className="w-full flex items-end gap-4">
           <div className="w-full">
-            <Label>Target X</Label>
-            <Input type="number" value={form.targetX} onChange={(e) => setForm((prevState) => ({ ...prevState, targetX: Number(e.target.value) }))}/>
+            <Label>m Order</Label>
+            <Input type="number" min={1} value={form.mOrder} onChange={(e) => setForm((prevState) => ({ ...prevState, mOrder: e.target.value }))}/>
           </div>
-          <Button onClick={calculate}>Calculate</Button>
+          <div className="w-full">
+            <Label>Target X</Label>
+            <Input type="number" value={form.targetX} onChange={(e) => setForm((prevState) => ({ ...prevState, targetX: e.target.value }))}/>
+          </div>
         </div>
+        <Button onClick={calculate}>Calculate</Button>
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogTrigger tabIndex={-1} asChild>
             <Button className="w-1/2 mx-auto" variant="ghost">Select Example Solution</Button>
@@ -137,24 +120,18 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
         </Dialog>
       </div>
 
-      <div className="w-fit mx-auto flex flex-col bg-white border p-4 rounded-md shadow-md">
+      <div className="w-fit mx-auto flex flex-col bg-white border p-2 rounded-md shadow-md">
         {Array.from({ length: nPoint }).map((_, i) => (
           <div key={i} className="flex items-center p-1 space-x-2">
             <p>{i + 1}.</p>
-            <Checkbox
-              checked={form.selectedPoint[i]}
-              tabIndex={-1}
-              onCheckedChange={() => handleCheckboxChange(i)}
-            />
             <Input
               value={form.pointX[i]}
               placeholder={`x${i}`}
-              type="number"
               onChange={(e) => handlePointXChange(i, e.target.value)}
             />
+            <Separator className="h-8 bg-dark" orientation="vertical"/>
             <Input 
               value={form.pointY[i]}
-              type="number"
               placeholder={`f(x${i})`}
               onChange={(e) => handlePointYChange(i, e.target.value)}
             />
@@ -171,5 +148,5 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

@@ -2,7 +2,7 @@
 
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
-import SingleIntegrationInput from "@/components/integration/SingleIntegrationInput"
+import SingleIntegrationInput from "@/components/integrate/SingleIntegrationInput"
 import { SingleIntegrationForm } from "@/lib/solutions/integration/Integration"
 import { SingleSimpsonResult } from "@/lib/solutions/integration/SimpsonRule";
 import { useRouter } from "next/navigation";
