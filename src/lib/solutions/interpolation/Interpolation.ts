@@ -16,5 +16,5 @@ export default abstract class Interpolation {
     this.targetX = targetX;
   }
 
-  public abstract solve(): any; 
+  public abstract solve(method?: string): any; 
 }

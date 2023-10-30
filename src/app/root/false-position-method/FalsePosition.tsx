@@ -2,7 +2,7 @@
 
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
-import RootOfEquationGraph from "@/components/RootOfEquationGraph";
+import RootOfEquationGraph from "@/components/root/RootOfEquationGraph";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import 'katex/dist/katex.min.css';
-import Navbar from "@/components/Nabvar";
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Numerical Methods",

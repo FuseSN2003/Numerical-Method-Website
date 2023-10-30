@@ -9,8 +9,8 @@ datasource db {
 }
 
 model InputData {
-  id     Int    @id @unique @default(autoincrement())
-  method String
-  form   Json
+  id        Int      @id @unique @default(autoincrement())
+  method    String
+  form      Json
   createdAt DateTime @default(now())
 }

@@ -1,5 +1,5 @@
 import Solutions from "@/lib/solutions/Solutions";
-import NewtonDividedDifferences, { NewtonDividedResult } from "@/lib/solutions/interpolation/NewtonDividedDifferences";
+import SplineInterpolation, { SplineResult } from "@/lib/solutions/interpolation/SplineInterpolation";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -8,16 +8,16 @@ export async function POST(req: Request) {
   try {
     const inputForm = await req.json();
 
-    const { form, pointX, pointY, targetX } = inputForm;
+    const { form, pointX, pointY, targetX, method } = inputForm;
 
-    const result: NewtonDividedResult = new NewtonDividedDifferences(pointX, pointY, targetX).solve();
+    const result: SplineResult = new SplineInterpolation(pointX, pointY, targetX).solve(method);
 
     if(result.ans) {
-      await Solutions.addData("Newton Divided-Differences", {
+      await Solutions.addData("Spline Interpolation", {
         pointX: form.pointX.map((element: any) => (element === undefined || element === null ? "" : element)),
         pointY: form.pointY.map((element: any) => (element === undefined || element === null ? "" : element)),
-        targetX: form.targetX,
-        selectedPoint: form.selectedPoint.map((element: any) => (element === undefined || element === null ? false : element)),
+        targetX,
+        method,
       });
     }
 

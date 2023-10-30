@@ -2,7 +2,7 @@
 
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
-import SingleIntegrationInput from "@/components/SingleIntegrationInput"
+import SingleIntegrationInput from "@/components/integration/SingleIntegrationInput"
 import { SingleIntegrationForm } from "@/lib/solutions/integration/Integration"
 import { SingleTrapezoidalResult } from "@/lib/solutions/integration/TrapezoidalRule";
 import { useRouter } from "next/navigation";

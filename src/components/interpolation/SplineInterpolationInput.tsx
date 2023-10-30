@@ -1,37 +1,38 @@
 "use client"
 
 import { useCallback, useMemo, useState } from "react";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { Minus, Plus } from "lucide-react";
-import { Checkbox } from "./ui/checkbox";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { InterpolationForm } from "@/lib/solutions/interpolation/Interpolation";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { InlineMath } from "react-katex";
+import { SplineInputForm } from "@/lib/solutions/interpolation/SplineInterpolation";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
+import { SelectValue } from "@radix-ui/react-select";
 
-interface InterpolationInputProps {
-  handleCalculate: (form: InterpolationForm, pointX: number[], pointY: number[], targetX: number) => void
-  question: InterpolationForm[]
+interface SplineInterpolationInputProps {
+  handleCalculate: (form: SplineInputForm, pointX: number[], pointY: number[], targetX: number, method: string) => void
+  question: SplineInputForm[]
 }
 
-export default function InterpolationInput({ handleCalculate, question }: InterpolationInputProps) {
+const selectMethod = [
+  {label: "Linear Interpolation", value: "linear"},
+  {label: "Quadratic Interpolation", value: "quadratic"},
+  {label: "Cubic Interpolation", value: "cubic"},
+]
+
+export default function SplineInterpolationInput({ handleCalculate, question }: SplineInterpolationInputProps) {
   const [nPoint, setNPoint] = useState(3);
   const [open, setOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [form, setForm] = useState<InterpolationForm>({
+  const [form, setForm] = useState<SplineInputForm>({
     pointX: Array(nPoint).fill(''),
     pointY: Array(nPoint).fill(''),
     targetX: 0,
-    selectedPoint: Array(nPoint).fill(false),
+    method: "linear",
   })
-
-  const handleCheckboxChange = (index: number) => {
-    const newSelectedPoint = [...form.selectedPoint];
-    newSelectedPoint[index] = !newSelectedPoint[index];
-    setForm(prevForm => ({ ...prevForm, selectedPoint: newSelectedPoint }));
-  }
 
   const handlePointXChange = (index: number, value: string) => {
     const newPointX = [...form.pointX];
@@ -56,25 +57,20 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
   }, [nPoint]);
 
   const calculate = useCallback(() => {
-    const selectedPointX = form.pointX.filter((_, index) => form.selectedPoint[index]).map((value) => Number(value));;
-    const selectedPointY = form.pointY.filter((_, index) => form.selectedPoint[index]).map((value) => Number(value));;
+    const pointX = form.pointX.map(Number)
+    const pointY = form.pointY.map(Number)
 
     if(!form.targetX) {
       setOpen(true);
       setAlertMessage("Please enter Target X");
       return;
     }
-
-    if(selectedPointX.length < 2) {
-      setOpen(true)
-      setAlertMessage("Please check point at least 2 points")
-      return;
-    }
     
-    handleCalculate(form, selectedPointX, selectedPointY, form.targetX)
+    handleCalculate(form, pointX, pointY, form.targetX, form.method);
   }, [form, handleCalculate])
 
-  const setSolution = (dataForm: InterpolationForm) => {
+  const setSolution = (dataForm: SplineInputForm) => {
+    console.log(dataForm)
     setNPoint(dataForm.pointX.length)
     setForm(dataForm);
     setOpenDialog(false);
@@ -84,12 +80,10 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
     return question.map((data, index) => (
       <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
         <div className="flex flex-col">
+          <InlineMath math={`n = ${data.pointX.length}`} />
           <InlineMath math={`x = [${data.pointX}]`}/>
           <InlineMath math={`y = [${data.pointY}]`}/>
-          <InlineMath math={`n = ${data.pointX.length}`} />
-          {data.selectedPoint.map((value, index) => (
-            <InlineMath key={index} math={`x_{${index}} = ${value}`} />
-          ))}
+          <p><span className="font-semibold">Method</span>: {data.method}</p>
         </div>
         <div className="flex items-center justify-end">
           <Button onClick={() => setSolution(data)}>Set Solution</Button>
@@ -116,6 +110,18 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
           </div>
           <Button onClick={calculate}>Calculate</Button>
         </div>
+        <div>
+          <Select defaultValue="linear" value={form.method} onValueChange={(e) => setForm((prevState) => ({ ...prevState, method: e }))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {selectMethod.map((data, index) => (
+                <SelectItem key={index} value={data.value}>{data.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogTrigger tabIndex={-1} asChild>
             <Button className="w-1/2 mx-auto" variant="ghost">Select Example Solution</Button>
@@ -135,11 +141,6 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
         {Array.from({ length: nPoint }).map((_, i) => (
           <div key={i} className="flex items-center p-1 space-x-2">
             <p>{i + 1}.</p>
-            <Checkbox
-              checked={form.selectedPoint[i]}
-              tabIndex={-1}
-              onCheckedChange={() => handleCheckboxChange(i)}
-            />
             <Input
               value={form.pointX[i]}
               placeholder={`x${i}`}

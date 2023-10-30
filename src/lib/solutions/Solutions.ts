@@ -1,6 +1,4 @@
-import { floor, max } from "mathjs";
 import prisma from "../prisma";
-import { InterpolationForm } from "./interpolation/Interpolation";
 
 export default class Solutions {
 
@@ -56,6 +54,9 @@ export default class Solutions {
 
   static async getData(method: string) {
     const result = await prisma.inputData.findMany({
+      select: {
+        form: true,
+      },
       where: {
         method,
       },

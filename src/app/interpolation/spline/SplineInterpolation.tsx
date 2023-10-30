@@ -1,33 +1,33 @@
 "use client"
 
 import DisplayResult from "@/components/DisplayResult";
-import InterpolationInput from "@/components/interpolation/InterpolationInput";
 import ResultContainer from "@/components/ResultContainer";
-import { InterpolationForm } from "@/lib/solutions/interpolation/Interpolation";
-import { NewtonDividedResult } from "@/lib/solutions/interpolation/NewtonDividedDifferences";
+import SplineInterpolationInput from "@/components/interpolation/SplineInterpolationInput";
+import { SplineInputForm, SplineResult } from "@/lib/solutions/interpolation/SplineInterpolation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { InlineMath } from "react-katex";
 
-interface NewtonDividedDifferencesProps {
-  question: InterpolationForm[]
+interface SplineInterpolationProps {
+  question: SplineInputForm[]
 }
 
-export default function NewtonDividedDifferences({ question }: NewtonDividedDifferencesProps) {
-  const [result, setResult] = useState<NewtonDividedResult>();
+export default function SplineInterpolation({ question }: SplineInterpolationProps) {
+
+  const [result, setResult] = useState<SplineResult>();
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleCalculate = async (form: InterpolationForm, pointX: number[], pointY: number[], targetX: number) => {
+  const handleCalculate = async (form: SplineInputForm, pointX: number[], pointY: number[], targetX: number, method: string) => {
     try {
       setLoading(true);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/inter/newton`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/inter/spline`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({form, pointX, pointY, targetX})
+        body: JSON.stringify({form, pointX, pointY, targetX, method})
       })
       
       const data = await res.json();
@@ -46,7 +46,7 @@ export default function NewtonDividedDifferences({ question }: NewtonDividedDiff
 
   return (
     <>
-      <InterpolationInput question={question} handleCalculate={handleCalculate} />
+      <SplineInterpolationInput question={question} handleCalculate={handleCalculate} />
 
       <ResultContainer result={result} loading={loading}>
         {result?.ans && (

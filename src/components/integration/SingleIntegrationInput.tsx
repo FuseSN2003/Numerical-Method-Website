@@ -1,27 +1,26 @@
 "use client"
 
 import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import { InlineMath } from "react-katex";
-import { Button } from "./ui/button";
-import { CompositeIntegrationForm } from "@/lib/solutions/integration/Integration";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Button } from "../ui/button";
+import { SingleIntegrationForm } from "@/lib/solutions/integration/Integration";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 const intialForm = {
   fx: "",
   a: 0,
   b: 0,
-  n: 0,
 }
 
-interface CompositeIntegrationInputProps {
-  cal: (form: CompositeIntegrationForm) => void;
-  question: CompositeIntegrationForm[]
+interface SingleIntegrationInputProps {
+  cal: (form: SingleIntegrationForm) => void;
+  question: SingleIntegrationForm[]
 }
 
-export default function CompositeIntegrationInput({ cal, question }: CompositeIntegrationInputProps) {
-  const [form, setForm] = useState<CompositeIntegrationForm>(intialForm);
+export default function SingleIntegrationInput({ cal, question }: SingleIntegrationInputProps) {
+  const [form, setForm] = useState<SingleIntegrationForm>(intialForm);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +35,7 @@ export default function CompositeIntegrationInput({ cal, question }: CompositeIn
     cal(form);
   }
 
-  const setSolution = (dataForm: CompositeIntegrationForm) => {
+  const setSolution = (dataForm: SingleIntegrationForm) => {
     setForm(dataForm);
     setOpenDialog(false);
   }
@@ -44,9 +43,8 @@ export default function CompositeIntegrationInput({ cal, question }: CompositeIn
   const mappedQuestion = useMemo(() => {
     return question.map((data, index) => (
       <div key={index} className="w-full grid grid-cols-1 gap-4 border rounded-md p-4">
-        <div className="flex flex-col">
+        <div className="flex">
           <InlineMath math={`\\int_{${data.a}}^{${data.b}}${data.fx}\\\tdx`}/>
-          <InlineMath math={`n = ${data.n}`} />
         </div>
         <div className="flex justify-center">
           <Button onClick={() => setSolution(data)}>Set Solution</Button>
@@ -62,7 +60,7 @@ export default function CompositeIntegrationInput({ cal, question }: CompositeIn
           <Label htmlFor="fx"><InlineMath math={`f(x)`} /></Label>
           <Input onChange={handleChange} type="text" id="fx" placeholder="4x^5-3x^4+x^3-6x+2" value={form.fx} />
         </div>
-        <div className="grid md:grid-cols-3 w-full items-center gap-4">
+        <div className="grid md:grid-cols-2 w-full items-center gap-4">
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="a"><InlineMath math={`a`} /></Label>
             <Input onChange={handleChange} type="number" id="a" step="0.000001" placeholder="a" value={form.a}  />
@@ -70,10 +68,6 @@ export default function CompositeIntegrationInput({ cal, question }: CompositeIn
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="b"><InlineMath math={`b`} /></Label>
             <Input onChange={handleChange} type="number" id="b" step="0.000001" placeholder="b" value={form.b} />
-          </div>
-          <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="n"><InlineMath math={`n`} /></Label>
-            <Input onChange={handleChange} type="number" id="n" step="0.000001" placeholder="n" value={form.n} />
           </div>
         </div>
         <Button type="submit" className="w-full">Calculate</Button>
