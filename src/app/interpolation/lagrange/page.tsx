@@ -1,18 +1,21 @@
 import PageLayout from "@/components/PageLayout";
-import Solutions from "@/lib/solutions/Solutions";
 import Lagrange from "./Lagrange";
 import { Metadata } from "next";
+import { getQuestion } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Lagrange Interpolation",
   description: "Lagrange Interpolation | Numerical Methods",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function LagrangeInterpolationPage() {
-  const data = await Solutions.getData("Lagrange Interpolation");
+  const question = await getQuestion("Lagrange Interpolation");
+
   return (
     <PageLayout title="Lagrange Interpolation">
-      <Lagrange question={data.map((data: any) => data.form)}/>
+      <Lagrange question={question.map((data: any) => data.form)}/>
     </PageLayout>
   );
 }

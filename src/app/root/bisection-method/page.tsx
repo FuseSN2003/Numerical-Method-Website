@@ -1,19 +1,21 @@
 import PageLayout from "@/components/PageLayout";
-import Solutions from "@/lib/solutions/Solutions";
 import Bisection from "./Bisection";
 import { Metadata } from "next";
+import { getQuestion } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Bisection Method",
   description: "Bisection Method | Numerical Methods",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function BisectionMethodPage() {
-  const data = await Solutions.getData("Bisection Method");
+  const question = await getQuestion("Bisection");
   
   return (
     <PageLayout title="Bisection Method">
-      <Bisection question={data.map((data: any) => data.form)}/>
+      <Bisection question={question.map((data: any) => data.form)}/>
     </PageLayout>
   );
 }
