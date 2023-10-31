@@ -30,6 +30,7 @@ export default function MultiLinearRegression({question}: MultiLinearRegressionP
       })
       
       const data = await res.json();
+      console.log(data)
 
       if(res.ok) {
         setResult(data);

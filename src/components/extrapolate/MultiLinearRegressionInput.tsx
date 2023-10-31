@@ -7,8 +7,9 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { MultiLinearForm } from "@/lib/solutions/extrapolation/MultiLinearRegression"
 import { Minus, Plus } from "lucide-react"
-import { InlineMath } from "react-katex"
+import { BlockMath, InlineMath } from "react-katex"
 import { Separator } from "../ui/separator"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
 interface MultiLinearRegressionInputProps {
   handleCalculate: (form: MultiLinearForm ,pointX: number[][], pointY: number[], targetX: number[]) => void
@@ -19,7 +20,7 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
   const [nPoint, setNPoint] = useState(3);
   const [nPointX, setNPointX] = useState(1);
   const [form, setForm] = useState<MultiLinearForm>({
-    pointX: Array.from({ length: nPointX }, () => Array(nPoint).fill("")),
+    pointX: Array.from({ length: nPoint }, () => Array(nPointX).fill("")),
     pointY: Array(nPoint).fill(''),
     targetX: Array(nPointX).fill(''),
   });
@@ -46,23 +47,23 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
   }
 
   const calculate = useCallback(() => {
-
-    const pointX = form.pointX.map((row) => row.map(Number))
+    const pointX = form.pointX[0].map((_, colIndex) => form.pointX.map(row => Number(row[colIndex])));
     const pointY = form.pointY.map((Number));
     const targetX = form.targetX.map((Number))
+    console.log(pointX)
 
     handleCalculate(form, pointX, pointY, targetX)
   }, [form, handleCalculate])
 
   const setSolution = (dataForm: MultiLinearForm) => {
-    setNPoint(dataForm.pointY.length)
-    setNPointX(dataForm.targetX.length)
     setForm(prevForm => ({
       ...prevForm,
       pointX: dataForm.pointX,
       pointY: dataForm.pointY,
       targetX: dataForm.targetX,
     }));
+    setNPoint(dataForm.pointX.length)
+    setNPointX(dataForm.targetX.length)
     setOpenDialog(false);
   }
 
@@ -76,44 +77,29 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
     }
   }, [nPoint]);
 
-  useEffect(() => {
-    setForm((prevState) => {
-      // Clone the current pointX array
-      const newPointX = prevState.pointX.map(row => [...row]);
-
-      // Clone the current pointY and targetX arrays
-      const newPointY = [...prevState.pointY];
-      const newTargetX = [...prevState.targetX];
-
-      // Resize the newPointX array to have the desired length
-      if (newPointX.length > nPointX) {
-        newPointX.length = nPointX;
-      } else {
-        while (newPointX.length < nPointX) {
-          newPointX.push(Array(nPoint).fill(''));
-        }
-      }
-
-      // Resize the newPointY and newTargetX arrays to have the desired length
-      newPointY.length = nPoint;
-      newTargetX.length = nPointX;
-
-      // Return the updated state
-      return {
-        ...prevState,
-        pointX: newPointX,
-        pointY: newPointY,
-        targetX: newTargetX,
-      };
-    });
-  }, [nPoint, nPointX]);
-
   const mappedQuestion = useMemo(() => {
     return question.map((data, index) => (
-      <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
+      <div key={index} className="w-full grid grid-cols-2 border rounded-md p-4">
         <div className="flex flex-col gap-1">
-          <p><InlineMath math="x ="/> {data.pointX.map((row) => `[${row.map((value) => value)}]`)}</p>
-          <p><InlineMath math="y ="/> {data.pointY.map((value) => value)}</p>
+          <InlineMath math={`find \\\t x = (${data.targetX})`} />
+          <Table className="border">
+            <TableHeader>
+              <TableRow>
+                <TableHead><InlineMath math={`i`}/></TableHead>
+                <TableHead><InlineMath math={`x_i`}/></TableHead>
+                <TableHead><InlineMath math={`f(x_i)`}/></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.pointX.map((value, indexdata) => (
+                <TableRow key={indexdata}>
+                  <TableCell>{indexdata+1}</TableCell>
+                  <TableCell>({value.join(",")})</TableCell>
+                  <TableCell>{data.pointY[indexdata]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
         <div className="flex items-center justify-end">
           <Button onClick={() => setSolution(data)}>Set Solution</Button>
@@ -121,6 +107,37 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
       </div>
     ))
   }, [question])
+
+  useEffect(() => {
+    const newPointX = Array.from({ length: nPoint }, (_, i) =>
+      Array.from({ length: nPointX }, (_, j) =>
+        form.pointX[i] && form.pointX[i][j] ? form.pointX[i][j] : ""
+      )
+    );
+
+    const newPointY = Array.from({ length: nPoint }, (_, i) =>
+      form.pointY[i] ? form.pointY[i] : ""
+    );
+
+    const newTargetX = Array.from({ length: nPointX }, (_, i) =>
+      form.targetX[i] ? form.targetX[i] : ""
+    );
+
+    if (
+      nPoint !== form.pointX.length ||
+      nPointX !== form.pointX[0].length ||
+      nPoint != form.pointY.length ||
+      nPointX != form.targetX.length
+    ) {
+      setForm((prevState) => ({
+        ...prevState,
+        pointX: newPointX,
+        pointY: newPointY,
+        targetX: newTargetX,
+      }))
+    }
+    
+  }, [nPoint, nPointX, form])
 
   return (
     <>
@@ -158,7 +175,7 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
         </div>
       </div>
 
-      <div className="max-w-full w-fit mx-auto flex gap-2">
+      <div className="max-w-full w-fit mx-auto flex gap-2 overflow-x-auto p-4">
         {Array.from({ length: nPointX }).map((_, i) => (
           <div key={i} className="flex flex-col gap-1">
             <Label><InlineMath math={`x_{${i}}`}/></Label>
@@ -171,28 +188,31 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
         ))}
       </div>
 
-      <div className="max-w-full w-fit mx-auto flex flex-col bg-white border p-6 rounded-md shadow-md overflow-x-auto">
-        {Array.from({ length: nPoint }, (_, row) =>
-          <div key={row} className="flex items-center gap-2 py-1">
-            <span>{row + 1}.</span>
-            {Array.from({ length: nPointX }, (_, col) => (
+      <div className="max-w-full w-fit flex gap-2 mx-auto bg-white border p-4 rounded-md shadow-md overflow-x-auto">
+        <div className="flex flex-col">
+          {form.pointX.map((row, indexRow) => (
+            <div key={indexRow} className="flex mx-auto items-center gap-2 py-1">
+              {row.map((value, indexCol) => (
+                <Input
+                  key={`x{${indexCol}${indexRow}}`}
+                  type="number"
+                  className="w-20"
+                  placeholder={`x${indexCol}${indexRow}`}
+                  value={value}
+                  onChange={(e) => handlePointXChange(indexRow, indexCol, e.target.value)}
+                />
+              ))}
+              <Separator className="h-8 bg-dark" orientation="vertical"/>
               <Input
-                placeholder={`x${col}${row}`}
+                type="number"
                 className="w-20"
-                key={`${col}${row}`}
-                value={form.pointX[col][row]}
-                onChange={(e) => handlePointXChange(col, row, e.target.value)}
+                placeholder={`f(x${indexRow})`}
+                value={form.pointY[indexRow]}
+                onChange={(e) => handlePointYChange(indexRow, e.target.value)}
               />
-            ))}
-            <Separator className="h-8 bg-dark" orientation="vertical" />
-            <Input
-              className="w-20"
-              placeholder={`f(x${row})`}
-              value={form.pointY[row]}
-              onChange={(e) => handlePointYChange(row, e.target.value)}
-            />
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </div>
     </>
   )

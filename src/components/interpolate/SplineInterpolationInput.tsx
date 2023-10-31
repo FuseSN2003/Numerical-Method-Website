@@ -10,6 +10,7 @@ import { InlineMath } from "react-katex";
 import { SplineInputForm } from "@/lib/solutions/interpolation/SplineInterpolation";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { SelectValue } from "@radix-ui/react-select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 interface SplineInterpolationInputProps {
   handleCalculate: (form: SplineInputForm, pointX: number[], pointY: number[], targetX: number, method: string) => void
@@ -78,11 +79,28 @@ export default function SplineInterpolationInput({ handleCalculate, question }: 
   const mappedQuestion = useMemo(() => {
     return question.map((data, index) => (
       <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <InlineMath math={`n = ${data.pointX.length}`} />
-          <InlineMath math={`x = [${data.pointX}]`}/>
-          <InlineMath math={`y = [${data.pointY}]`}/>
-          <p><span className="font-semibold">Method</span>: {data.method}</p>
+          <p><span className="font-bold">Method</span>: {data.method}</p>
+          <p className="font-bold">Points</p>
+          <Table className="border">
+            <TableHeader>
+              <TableRow>
+                <TableHead><InlineMath math={`i`}/></TableHead>
+                <TableHead><InlineMath math={`x_i`}/></TableHead>
+                <TableHead><InlineMath math={`f(x_i)`}/></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.pointX.map((value, index) => (
+                <TableRow key={index}>
+                  <TableCell>{index+1}</TableCell>
+                  <TableCell>{value}</TableCell>
+                  <TableCell>{data.pointY[index]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
         <div className="flex items-center justify-end">
           <Button onClick={() => setSolution(data)}>Set Solution</Button>

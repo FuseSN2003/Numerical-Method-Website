@@ -9,6 +9,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { InterpolationForm } from "@/lib/solutions/interpolation/Interpolation";
 import { InlineMath } from "react-katex";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 interface InterpolationInputProps {
   handleCalculate: (form: InterpolationForm, pointX: number[], pointY: number[], targetX: number) => void
@@ -83,19 +84,27 @@ export default function InterpolationInput({ handleCalculate, question }: Interp
   const mappedQuestion = useMemo(() => {
     return question.map((data, index) => (
       <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <InlineMath math={`n = ${data.pointX.length}`} />
-          <p className="font-bold">Selected Point</p>
-          <div className="flex flex-col gap-4">
-            {data.selectedPoint.map((value, index) => (
-              value && (
-                <div key={index} className="flex flex-col">
-                  <InlineMath math={`x_{${index}} = ${data.pointX[index]}`}/>
-                  <InlineMath math={`f_(x{${index}}) = ${data.pointY[index]}`}/>
-                </div>
-              )
-            ))}
-          </div>
+          <p className="font-bold">Points</p>
+          <Table className="border">
+            <TableHeader>
+              <TableRow>
+                <TableHead><InlineMath math={`i`}/></TableHead>
+                <TableHead><InlineMath math={`x_i`}/></TableHead>
+                <TableHead><InlineMath math={`f(x_i)`}/></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.selectedPoint.map((value, index) => (
+                <TableRow key={index} className={`${value ? "bg-green-100" : "bg-white"}`}>
+                  <TableCell>{index+1}</TableCell>
+                  <TableCell>{data.pointX[index]}</TableCell>
+                  <TableCell>{data.pointY[index]}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
         <div className="flex items-center justify-end">
           <Button onClick={() => setSolution(data)}>Set Solution</Button>

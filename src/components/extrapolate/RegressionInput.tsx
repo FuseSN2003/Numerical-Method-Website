@@ -67,12 +67,12 @@ export default function RegressionInput({question, handleCalculate}: RegressionI
 
   const mappedQuestion = useMemo(() => {
     return question.map((data, index) => (
-      <div key={index} className="w-full grid grid-cols-2 border rounded-md p-2">
+      <div key={index} className="w-full grid grid-cols-2 border rounded-md p-4">
         <div className="flex flex-col gap-1">
           <InlineMath math={`n = ${data.pointX.length}`} />
           <InlineMath math={`m = ${data.mOrder}`} />
           <InlineMath math={`find \\\t x = ${data.targetX}`} />
-          <Table>
+          <Table className="border">
             <TableHeader>
               <TableRow>
                 <TableHead><InlineMath math={`i`}/></TableHead>
