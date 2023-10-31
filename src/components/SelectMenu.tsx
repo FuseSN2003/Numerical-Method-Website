@@ -1,6 +1,6 @@
 "use client"
 
-import { MenuDataType, differential, extrapolation, integration, interpolation, linearAlgebraEquation, rootOfEquation } from "@/lib/menuData";
+import { MenuDataType, differentiation, extrapolation, integration, interpolation, linearAlgebraEquation, rootOfEquation } from "@/lib/menuData";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import Link from "next/link";
@@ -11,7 +11,7 @@ const selectItem = [
   { label: "Interpolation", value: "interpolation"},
   { label: "Extrapolation", value: "extrapolation"},
   { label: "Integration", value: "integration"},
-  { label: "Differential", value: "differential"},
+  { label: "Differentiation", value: "differentiation"},
 ]
 
 export default function SelectMenu() {
@@ -46,9 +46,9 @@ export default function SelectMenu() {
         setMenu(integration);
         break;
       }
-      case "differential": {
-        setTitle("Differential");
-        setMenu(differential);
+      case "differentiation": {
+        setTitle("Differentiation");
+        setMenu(differentiation);
         break;
       }
       default:
@@ -78,7 +78,7 @@ export default function SelectMenu() {
           <Link
             key={index}
             href={data.link}
-            className="w-80 font-bold text-center border p-4 text-white bg-gradient-to-t from-secondary to-primary rounded-xl hover:scale-105 duration-150"
+            className={`w-80 font-bold text-center border p-4 text-white bg-gradient-to-t from-secondary to-primary rounded-xl hover:scale-105 duration-150 ${selected === "differentiation" && "col-span-2"}`}
           >
             {data.label}
           </Link>

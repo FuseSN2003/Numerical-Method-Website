@@ -41,7 +41,6 @@ export const integration: MenuDataType[] = [
   { label: "Composite Simpson's Rule", link: "/integration/composite-simpson" },
 ]
 
-export const differential: MenuDataType[] = [
-  { label: "Newton Divided-Differences", link: "/differential/newton" },
-  { label: "Newton Divided-Differences", link: "/differential/newton" },
+export const differentiation: MenuDataType[] = [
+  { label: "Differential Equation", link: "/differentiation" },
 ]
