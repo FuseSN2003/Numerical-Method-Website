@@ -24,8 +24,6 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
     pointY: Array(nPoint).fill(''),
     targetX: Array(nPointX).fill(''),
   });
-  const [alertMessage, setAlertMessage] = useState("");
-  const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const handlePointXChange = (row: number, col: number, value: string) => {
@@ -50,7 +48,6 @@ export default function MultiLinearRegressionInput({ handleCalculate, question }
     const pointX = form.pointX[0].map((_, colIndex) => form.pointX.map(row => Number(row[colIndex])));
     const pointY = form.pointY.map((Number));
     const targetX = form.targetX.map((Number))
-    console.log(pointX)
 
     handleCalculate(form, pointX, pointY, targetX)
   }, [form, handleCalculate])

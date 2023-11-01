@@ -1,5 +1,4 @@
 import { Point } from "@/types";
-import { EvalFunction } from "mathjs";
 
 export default abstract class RootOfEquation {
   protected fx: string;
