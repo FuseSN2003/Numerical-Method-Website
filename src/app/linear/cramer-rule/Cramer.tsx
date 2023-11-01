@@ -2,14 +2,14 @@
 
 import ResultContainer from "@/components/ResultContainer";
 import MatrixInput from "@/components/linear/MatrixInput"
-import { CramerResult } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
+import { CramerResult, MatrixInputType } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { formatDet } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react"
 import { BlockMath, InlineMath } from "react-katex";
 
 interface CramerProps {
-  question: any
+  question: MatrixInputType[]
 }
 
 export default function Cramer({ question }: CramerProps) {
@@ -41,7 +41,7 @@ export default function Cramer({ question }: CramerProps) {
 
   return (
     <>
-      <MatrixInput handleCalculate={handleCalculate}/>
+      <MatrixInput question={question} handleCalculate={handleCalculate}/>
 
       <ResultContainer result={result} loading={loading}>
         {result?.ans && (
@@ -60,7 +60,7 @@ export default function Cramer({ question }: CramerProps) {
             <div className="flex gap-4">
               <InlineMath math={`\\therefore`}/>
               <div className="flex flex-col">
-                {result.ans.solution.map((value, index) => (
+                {result.ans.solutions.map((value, index) => (
                   <InlineMath key={index} math={`x_{${index+1}} = ${value}`} />
                 ))}
               </div>

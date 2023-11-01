@@ -108,12 +108,12 @@ export default function RegressionInput({question, handleCalculate}: RegressionI
     <>
       <div className="w-full max-w-xs mx-auto flex flex-col gap-6">
         <div className="w-full flex border items-end gap-1">
-          <Button onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
+          <Button onClick={decreaseN} variant="destructive"><Minus size={16}/></Button>
           <div className="mx-auto">
             <Label htmlFor="nPoint">Number of Points</Label>
             <Input id="nPoint" type="number" min={1} value={nPoint} onChange={(e) => setNPoint(Number(e.target.value))} />
           </div>
-          <Button onClick={increaseN} variant="default"><Plus size={16}/></Button>
+          <Button className="bg-green-500 hover:bg-green-500/90" onClick={increaseN} variant="default"><Plus size={16}/></Button>
         </div>
         <div className="w-full flex items-end gap-4">
           <div className="w-full">

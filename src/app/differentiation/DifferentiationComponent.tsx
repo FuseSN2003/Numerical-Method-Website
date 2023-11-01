@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DiffResult } from "@/lib/solutions/differentiation/Differentiation"
 import { re } from "mathjs"
+import { useRouter } from "next/navigation"
 import React, { ChangeEvent, useEffect, useMemo, useState } from "react"
 import { InlineMath } from "react-katex"
 
@@ -50,6 +51,7 @@ export default function DifferentiationComponent({ question }: DifferentiationPr
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -89,6 +91,7 @@ export default function DifferentiationComponent({ question }: DifferentiationPr
       console.log(error)
     } finally {
       setLoading(false);
+      router.refresh();
     }
   }
 

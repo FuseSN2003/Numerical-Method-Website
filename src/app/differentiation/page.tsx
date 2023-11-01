@@ -12,7 +12,6 @@ export const dynamic = "force-dynamic";
 
 export default async function DifferentiationPage() {
   const question = await getQuestion("Differentiation");
-  console.log(question)
   
   return (
     <PageLayout title="Differentiation">

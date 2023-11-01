@@ -119,7 +119,7 @@ export default function SplineInterpolationInput({ handleCalculate, question }: 
           </div>
           <div className="flex-grow flex gap-1">
             <Button className="w-full" onClick={decreaseN} variant={"destructive"}><Minus size={16}/></Button>
-            <Button className="w-full" onClick={increaseN} variant="default"><Plus size={16}/></Button>
+            <Button className="w-full bg-green-500 hover:bg-green-500/90" onClick={increaseN} variant="default"><Plus size={16}/></Button>
           </div>
         </div>
         <div className="w-full flex items-end mx-auto gap-2">

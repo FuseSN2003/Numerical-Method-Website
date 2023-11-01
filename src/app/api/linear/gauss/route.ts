@@ -1,5 +1,5 @@
 import Solutions from "@/lib/solutions/Solutions";
-import LinearAlgebraEquation, { CramerResult } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
+import LinearAlgebraEquation, { CramerResult, GaussResult } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     const { form, matrixA, matrixB } = await req.json();
 
-    const result: CramerResult = LinearAlgebraEquation.cramer(matrixA, matrixB);
+    const result: GaussResult = LinearAlgebraEquation.gauss(matrixA, matrixB);
 
     if(result.ans) {
       await Solutions.addData("Linear Algebra Equation", {

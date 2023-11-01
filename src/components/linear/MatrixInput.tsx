@@ -1,21 +1,27 @@
 "use client"
 
-import { ChangeEvent, useCallback, useEffect, useState } from "react"
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Minus, Plus } from "lucide-react";
+import { MatrixInputType } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
+import { formatMatrix, formatMatrix1D } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { BlockMath, InlineMath } from "react-katex";
 
 interface MatrixInputProps {
   handleCalculate: (form: any, matrixA: number[][], matrixB: number[]) => void
+  question: MatrixInputType[]
 }
 
-export default function MatrixInput({ handleCalculate }: MatrixInputProps) {
+export default function MatrixInput({ handleCalculate, question }: MatrixInputProps) {
   const [matrixSize, setMatrixSize] = useState(3);
   const [form, setForm] = useState({
     matrixA: Array.from({ length: matrixSize }, () => Array(matrixSize).fill("")),
     matrixB: Array(matrixSize).fill(''),
   });
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const handleChangeSize = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     let value = Number(e.target.value)
@@ -27,7 +33,7 @@ export default function MatrixInput({ handleCalculate }: MatrixInputProps) {
 
   const increaseSize = useCallback(() => {
     setMatrixSize((prevSize) => prevSize + 1);
-  }, [matrixSize])
+  }, [])
 
   const decreaseSize = useCallback(() => {
     if(matrixSize > 2) {
@@ -54,7 +60,7 @@ export default function MatrixInput({ handleCalculate }: MatrixInputProps) {
     const matrixB = form.matrixB.map(Number);
 
     handleCalculate(form, matrixA, matrixB)
-  }, [form])
+  }, [form, handleCalculate])
 
 
   useEffect(() => {
@@ -80,8 +86,45 @@ export default function MatrixInput({ handleCalculate }: MatrixInputProps) {
     }
   }, [matrixSize, form]);
 
+  const setQuestion = (dataForm: MatrixInputType) => {
+    setForm(dataForm);
+    setOpenDialog(false);
+  }
+
+  const mappedQuestion = useMemo(() => {
+    return question.map((data, index) => {
+      const matrixANumber = data.matrixA.map(row => row.map(element => Number(element)));
+      const matrixBNumber = data.matrixB.map(value => Number(value))
+      return (
+        <div key={index} className="w-full grid grid-cols-1 gap-4 border rounded-md p-4">
+          <div className="flex mx-auto">
+            <InlineMath math={`A = ${formatMatrix(matrixANumber)}`}/>
+            <InlineMath math={`B = ${formatMatrix1D(matrixBNumber, false)}`}/>
+          </div>
+          <div className="flex justify-center">
+            <Button onClick={() => setQuestion(data)}>Set Solution</Button>
+          </div>
+        </div>
+      )
+    })
+  }, [question])
+
   return (
     <>
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+          <DialogTrigger tabIndex={-1} asChild>
+            <Button className="mx-auto" variant="ghost">Select Example Solution</Button>
+          </DialogTrigger>
+          <DialogContent className="w-full max-w-xl h-[60dvh] p-8">
+            <DialogHeader className="px-4">
+              <DialogTitle>Select Example Solution</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col p-4 gap-2 overflow-y-auto">
+              {mappedQuestion}
+            </div>
+          </DialogContent>
+        </Dialog>
+
       <div className="mx-auto flex items-end gap-2">
         <Button onClick={decreaseSize} variant={"destructive"}><Minus /></Button>
         <div className="flex flex-col gap-2">

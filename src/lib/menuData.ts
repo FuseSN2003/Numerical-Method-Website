@@ -14,8 +14,8 @@ export const rootOfEquation: MenuDataType[] = [
 
 export const linearAlgebraEquation: MenuDataType[] = [
   { label: "Cramer's Rule", link: "/linear/cramer-rule" },
-  { label: "Gauss Elimination", link: "/linear/gauss-elimination" },
-  { label: "Gauss-Jordan Elimination", link: "/linear/gauss-jordan-elimination" },
+  { label: "Gauss Elimination", link: "/linear/gauss" },
+  { label: "Gauss-Jordan Elimination", link: "/linear/gauss-jordan" },
   { label: "Matrix Inversion", link: "/linear/matrix-inversion" },
   { label: "LU Decomposition Method", link: "/linear/lu-decomposition" },
   { label: "Jacobi Iteration Method", link: "/linear/jacobi-iteration" },

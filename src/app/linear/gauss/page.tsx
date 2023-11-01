@@ -1,22 +1,21 @@
 import PageLayout from "@/components/PageLayout";
-import Cramer from "./Cramer";
 import { Metadata } from "next";
 import { getQuestion } from "@/lib/utils";
+import GaussElimination from "./GaussElimination";
 
 export const metadata: Metadata = {
-  title: "Cramer's Rule",
-  description: "Cramer's Rule | Numerical Methods",
+  title: "Gauss Elimination",
+  description: "Gauss Elimination | Numerical Methods",
 };
 
 export const dynamic = "force-dynamic";
 
-export default async function CramerRulePage() {
+export default async function GaussEliminationPage() {
   const question = await getQuestion("Linear Algebra Equation");
-  console.log(question)
   
   return (
-    <PageLayout title="Cramer's Rule">
-      <Cramer question={question.map((data: any) => data.form)}/>
+    <PageLayout title="Gauss Elimination">
+      <GaussElimination question={question.map((data: any) => data.form)}/>
     </PageLayout>
   );
 }

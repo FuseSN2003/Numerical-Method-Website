@@ -14,11 +14,17 @@ export async function getQuestion(method: string) {
   }
 }
 
-export function formatMatrix(matrix: number[][], precision: number = 6) {
+export function formatMatrix1D(matrix: number[], row: boolean) {
+  return `\\begin{bmatrix}
+          ${matrix.join(`${row ? `&` : `\\\\`}`)}
+  \\end{bmatrix}`;
+}
+
+export function formatMatrix(matrix: number[][]) {
   let out = ''
   matrix.forEach((m) => {
     m.forEach((n: number, idx: number) => {
-      out += `${Number(Number(n.toFixed(precision)))}`
+      out += `${n}`
       out += `${idx == m.length - 1 ? '' : '&'}`
     })
     out += '\\\\'
@@ -29,11 +35,11 @@ export function formatMatrix(matrix: number[][], precision: number = 6) {
   \\end{bmatrix}`
 }
 
-export function formatDet(matrix: number[][], precision: number = 6) {
+export function formatDet(matrix: number[][]) {
   let out = ''
   matrix.forEach((m) => {
     m.forEach((n: number, idx: number) => {
-      out += `${Number(Number(n.toFixed(precision)))}`
+      out += `${n}`
       out += `${idx == m.length - 1 ? '' : '&'}`
     })
     out += '\\\\'
@@ -42,4 +48,41 @@ export function formatDet(matrix: number[][], precision: number = 6) {
   return `\\begin{vmatrix}
           ${out}
   \\end{vmatrix}`
+}
+
+export function createVector(n: number, c: string) {
+  let vector = '\\begin{bmatrix}';
+  
+  for (let i = 1; i <= n; i++) {
+    vector += `${c}_{${i}}`;
+    if (i < n) {
+      vector += ' \\\\ ';
+    }
+  }
+
+  vector += '\\end{bmatrix}';
+
+  return vector
+}
+
+export function createBackSubstitutionEquation (augmentedMatrix: number[][]): string[] {
+  const equations = [];
+  const n = augmentedMatrix.length;
+  for (let i = n - 1; i >= 0; i--) {
+    const equationParts = [];
+    equationParts.push(`x_{${i + 1}} =`);
+
+    equationParts.push(`\\frac{b_{${i + 1}}`);
+
+    for (let j = n - 1; j >= i + 1; j--) {
+      if (augmentedMatrix[i][j] !== 0) {
+        equationParts.push(`- a_{${i + 1}${j + 1}}x_{${j+1}}`);
+      }
+    }
+
+    equationParts.push(`}{{a_{${i + 1}${i + 1}}}}`);
+
+    equations.push(equationParts.join(' '));
+  }
+  return equations;
 }
