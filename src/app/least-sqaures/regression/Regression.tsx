@@ -2,7 +2,7 @@
 
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
-import RegressionInput from "@/components/extrapolate/RegressionInput";
+import RegressionInput from "@/components/regression/RegressionInput";
 import { RegressionForm, RegressionResult } from "@/lib/solutions/extrapolation/Regression";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,7 +21,7 @@ export default function Regression({ question }: RegressionProps) {
     try {
       setLoading(true);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/extra/regression`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/least-squares/regression`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

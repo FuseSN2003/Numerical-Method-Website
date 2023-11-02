@@ -1,15 +1,15 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { Button } from "../ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import { MultiLinearForm } from "@/lib/solutions/extrapolation/MultiLinearRegression"
-import { Minus, Plus } from "lucide-react"
-import { BlockMath, InlineMath } from "react-katex"
-import { Separator } from "../ui/separator"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { MultiLinearForm } from "@/lib/solutions/extrapolation/MultiLinearRegression";
+import { Minus, Plus } from "lucide-react";
+import { InlineMath } from "react-katex";
+import { Separator } from "../ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 interface MultiLinearRegressionInputProps {
   handleCalculate: (form: MultiLinearForm ,pointX: number[][], pointY: number[], targetX: number[]) => void

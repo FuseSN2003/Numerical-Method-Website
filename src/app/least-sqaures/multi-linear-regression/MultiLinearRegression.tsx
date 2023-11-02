@@ -2,7 +2,7 @@
 
 import DisplayResult from "@/components/DisplayResult";
 import ResultContainer from "@/components/ResultContainer";
-import MultiLinearRegressionInput from "@/components/extrapolate/MultiLinearRegressionInput"
+import MultiLinearRegressionInput from "@/components/regression/MultiLinearRegressionInput";
 import { MultiLinearForm, MultiLinearRegressionResult } from "@/lib/solutions/extrapolation/MultiLinearRegression"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,7 +21,7 @@ export default function MultiLinearRegression({question}: MultiLinearRegressionP
     try {
       setLoading(true);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/extra/multiple-linear-regression`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/least-squares/multiple-linear-regression`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

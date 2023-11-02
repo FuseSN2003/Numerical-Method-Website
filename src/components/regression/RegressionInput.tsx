@@ -107,7 +107,7 @@ export default function RegressionInput({question, handleCalculate}: RegressionI
   return (
     <>
       <div className="w-full max-w-xs mx-auto flex flex-col gap-6">
-        <div className="w-full flex border items-end gap-1">
+        <div className="w-full flex items-end gap-1">
           <Button onClick={decreaseN} variant="destructive"><Minus size={16}/></Button>
           <div className="mx-auto">
             <Label htmlFor="nPoint">Number of Points</Label>

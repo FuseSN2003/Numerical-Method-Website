@@ -29,9 +29,9 @@ export const interpolation: MenuDataType[] = [
   { label: "Spline Interpolation", link: "/interpolation/spline" },
 ]
 
-export const extrapolation: MenuDataType[] = [
-  { label: "Regression", link: "/extrapolation/regression" },
-  { label: "Multiple Linear Regression", link: "/extrapolation/multi-linear-regression" },
+export const leastSqaures: MenuDataType[] = [
+  { label: "Regression", link: "/least-sqaures/regression" },
+  { label: "Multiple Linear Regression", link: "/least-sqaures/multi-linear-regression" },
 ]
 
 export const integration: MenuDataType[] = [

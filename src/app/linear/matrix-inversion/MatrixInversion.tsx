@@ -5,7 +5,7 @@ import MatrixInput from "@/components/linear/MatrixInput"
 import { MatrixInversionResult } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { createVector, formatMatrix } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { useState } from "react"
+import { useState } from "react";
 import { BlockMath, InlineMath } from "react-katex";
 
 interface MatrixInversionProps {

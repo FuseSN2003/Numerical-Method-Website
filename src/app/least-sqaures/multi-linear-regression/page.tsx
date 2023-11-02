@@ -1,5 +1,4 @@
 import PageLayout from "@/components/PageLayout";
-
 import { Metadata } from "next";
 import { getQuestion } from "@/lib/utils";
 import MultiLinearRegression from "./MultiLinearRegression";

@@ -1,6 +1,6 @@
 "use client"
 
-import { MenuDataType, differentiation, extrapolation, integration, interpolation, linearAlgebraEquation, rootOfEquation } from "@/lib/menuData";
+import { MenuDataType, differentiation, integration, interpolation, leastSqaures, linearAlgebraEquation, rootOfEquation } from "@/lib/menuData";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import Link from "next/link";
@@ -9,7 +9,7 @@ const selectItem = [
   { label: "Root of Equation", value: "rootOfEquation"},
   { label: "Linear Algebra Equation", value: "linearAlgebraEquation"},
   { label: "Interpolation", value: "interpolation"},
-  { label: "Extrapolation", value: "extrapolation"},
+  { label: "Least-Squares Regression", value: "least-Squares"},
   { label: "Integration", value: "integration"},
   { label: "Differentiation", value: "differentiation"},
 ]
@@ -36,9 +36,9 @@ export default function SelectMenu() {
         setMenu(interpolation);
         break;
       }
-      case "extrapolation": {
-        setTitle("Extrapolation");
-        setMenu(extrapolation);
+      case "least-Squares": {
+        setTitle("Least-Squares Regression");
+        setMenu(leastSqaures);
         break;
       }
       case "integration": {
