@@ -60,7 +60,7 @@ export default class Solutions {
       where: {
         method,
       },
-      take: 10,
+      take: 5,
       orderBy: {
         createdAt: "desc"
       }

@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function CramerRulePage() {
   const question = await getQuestion("Linear Algebra Equation");
-  console.log(question)
   
   return (
     <PageLayout title="Cramer's Rule">

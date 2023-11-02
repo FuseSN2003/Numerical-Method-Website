@@ -40,7 +40,111 @@ export interface GaussResult {
   error?: string
 }
 
+interface EliminationStep {
+  factor: number
+  beforeElimination: number[][]
+  afterElimination: number[][]
+  i: number
+  j: number
+}
+
+interface NormalizeStep {
+  beforeNormalize: number[][]
+  afterNormalize: number[][]
+  pivot: number
+  row: number
+}
+
+interface GaussJordanStep {
+  elimination?: EliminationStep
+  normalize?: NormalizeStep
+}
+
+export interface GaussJordanResult {
+  ans?: {
+    solutions: number[]
+    steps: GaussJordanStep[]
+  }
+  error?: string
+}
+
+interface InversionEliminationStep {
+  factor: number
+  beforeElimination: number[][]
+  afterElimination: number[][]
+  i: number
+  j: number
+}
+
+interface InversionNormalizeStep {
+  beforeNormalize: number[][]
+  afterNormalize: number[][]
+  pivot: number
+  row: number
+}
+
+interface MatrixInversionStep {
+  elimination?: InversionEliminationStep
+  normalize?: InversionNormalizeStep
+}
+
+export interface MatrixInversionResult {
+  ans?: {
+    solutions: number[]
+    steps: MatrixInversionStep[]
+    inverseMatrix: number[][]
+    matrixB: number[][]
+    n: number
+  }
+  error?: string
+}
+
+interface LUForwardSumData {
+  l: number
+  y: number
+}
+
+interface LUBackwardSumData {
+  u: number
+  x: number
+}
+
+interface LUForwardSubtiution {
+  y: number
+  b: number
+  sumData: LUForwardSumData[]
+}
+
+interface LUBackwardSubtiution {
+  y: number
+  u: number
+  x: number
+  i: number
+  sumData: LUBackwardSumData[]
+}
+
+export interface LUResult {
+  ans?: {
+    solutions: number[]
+    forwardSubtiution: LUForwardSubtiution[]
+    backwardSubtiution: LUBackwardSubtiution[]
+    matrixA: number[][]
+    matrixB: number[][]
+    matrixY: number[][]
+    matrixL: number[][]
+    matrixU: number[][]
+    n: number
+  }
+  error?: string
+}
+
 export default class LinearAlgebraEquation {
+
+  public static createIdentityMatrix(size: number): number[][] {
+    return Array.from({ length: size }, (_, i) => {
+      return Array.from({ length: size }, (_, j) => (i === j ? 1 : 0));
+    });
+  }
 
   public static cramer(matrixA:number[][], matrixB: number[]): CramerResult {
     const n = matrixA.length;
@@ -107,4 +211,178 @@ export default class LinearAlgebraEquation {
     return result;
   }
 
+  public static gaussJordan(matrixA: number[][], matrixB: number[]): GaussJordanResult {
+    const n = matrixA.length;
+    const result: GaussJordanResult = {};
+    const augmentedMatrix: number[][] = [];
+    const steps: GaussJordanStep[] = [];
+    const solutions: number[] = [];
+
+    for(let i = 0; i < n; i++) {
+      augmentedMatrix.push([...matrixA[i], matrixB[i]])
+    }
+
+    for (let i = 0; i < n; i++) {
+      if (augmentedMatrix[i][i] === 0) {
+        continue;
+      }
+      const beforeNormalize = augmentedMatrix.map(row => Array.from(row));
+      const pivot = augmentedMatrix[i][i];
+      for (let j = i; j < n + 1; j++) {
+        augmentedMatrix[i][j] /= pivot;
+      }
+      const afterNormalize = augmentedMatrix.map(row => Array.from(row));
+      steps.push({normalize: {beforeNormalize, afterNormalize, pivot, row: i + 1}});
+  
+      for (let k = 0; k < n; k++) {
+        if (k !== i) {
+          const factor = -augmentedMatrix[k][i];
+          const beforeElimination = augmentedMatrix.map(row => Array.from(row));
+          for (let j = i; j < n + 1; j++) {
+            augmentedMatrix[k][j] += factor * augmentedMatrix[i][j];
+          }
+          const afterElimination = augmentedMatrix.map(row => Array.from(row));
+          steps.push({elimination: {factor, beforeElimination, afterElimination,i: i +1, j: k+ 1}})
+        }
+      }
+    }
+
+    for (let i = 0; i < n; i++) {
+      solutions[i] = augmentedMatrix[i][n];
+    }
+
+    result.ans = { solutions, steps }
+    
+    return result;
+  }
+
+  public static matrixInversion(matrixA: number[][], matrixB: number[]): MatrixInversionResult {
+    const n = matrixA.length;
+    const result: MatrixInversionResult = {};
+    const augmentedMatrix: number[][] = [];
+    const steps: MatrixInversionStep[] = [];
+    const solutions: number[] = [];
+
+    for (let i = 0; i < n; i++) {
+      augmentedMatrix.push([...matrixA[i], ...this.createIdentityMatrix(n)[i]]);
+    }
+    
+    for (let i = 0; i < n; i++) {
+      const beforeNormalize = augmentedMatrix.map(row => Array.from(row));
+      const pivot = augmentedMatrix[i][i];
+      if (pivot === 0) {
+        let foundNonZero = false;
+        for (let k = i + 1; k < n; k++) {
+          if (augmentedMatrix[k][i] !== 0) {
+            [augmentedMatrix[i], augmentedMatrix[k]] = [augmentedMatrix[k], augmentedMatrix[i]];
+            foundNonZero = true;
+            break;
+          }
+        }
+
+        if (!foundNonZero) {
+          result.error = "Matrix is singular and not invertible.";
+          return result;
+        }
+      }
+
+      for (let j = 0; j < 2 * n; j++) {
+        augmentedMatrix[i][j] /= pivot;
+      }
+      const afterNormalize = augmentedMatrix.map(row => Array.from(row));
+      steps.push({normalize: { beforeNormalize, afterNormalize, pivot, row: i + 1}})
+      
+      for (let k = 0; k < n; k++) {
+        const beforeElimination = augmentedMatrix.map(row => Array.from(row));
+        if (k !== i) {
+          const factor = -augmentedMatrix[k][i];
+          for (let j = 0; j < 2 * n; j++) {
+            augmentedMatrix[k][j] += factor * augmentedMatrix[i][j];
+          }
+          const afterElimination = augmentedMatrix.map(row => Array.from(row));
+          steps.push({elimination: {factor, beforeElimination, afterElimination,i: i +1, j: k+ 1}})
+        }
+      }
+    }
+
+    const inverseMatrix = augmentedMatrix.map(row => row.slice(n, 2 * n));
+
+    for (let i = 0; i < n; i++) {
+      let sum = 0;
+      for (let j = 0; j < n; j++) {
+        sum += inverseMatrix[i][j] * matrixB[j];
+      }
+      solutions.push(sum);
+    }
+
+    const matrixB2D = matrixB.map(value => [Number(value)]);;
+
+    result.ans = { n, inverseMatrix, matrixB: matrixB2D, steps, solutions }
+
+    return result;
+  }
+
+  public static luDecomposition(matrixA: number[][], matrixB: number[]): LUResult {
+    const n = matrixA.length;
+    const result: LUResult = {};
+
+    const L = Array.from({ length: n }, () => Array(n).fill(0));
+    const U = Array.from({ length: n }, () => Array(n).fill(0));
+
+    for (let i = 0; i < n; i++) {
+      for (let k = i; k < n; k++) {
+        let sum = 0;
+        for (let j = 0; j < i; j++) {
+          sum += L[i][j] * U[j][k];
+        }
+        U[i][k] = matrixA[i][k] - sum;
+      }
+
+      for (let k = i; k < n; k++) {
+        if (i == k) {
+          L[i][i] = 1;
+        } else {
+          let sum = 0;
+          for (let j = 0; j < i; j++) {
+            sum += L[k][j] * U[j][i];
+          }
+          L[k][i] = (matrixA[k][i] - sum) / U[i][i];
+        }
+      }
+    }
+
+    const y: number[] = [];
+    const x: number[] = [];
+    const forwardSubtiution: LUForwardSubtiution[] = []
+    const backwardSubtiution: LUBackwardSubtiution[] = []
+
+    for (let i = 0; i < n; i++) {
+      let sum = 0;
+      const sumData: LUForwardSumData[] = [];
+      for (let j = 0; j < i; j++) {
+        sum += L[i][j] * y[j];
+        sumData.push({l: L[i][j], y: y[j]})
+      }
+      y[i] = matrixB[i] - sum;
+      forwardSubtiution.push({y: y[i], b: matrixB[i], sumData})
+    }
+
+    for (let i = n - 1; i >= 0; i--) {
+      let sum = 0;
+      const sumData: LUBackwardSumData[] = [];
+      for (let j = i + 1; j < n; j++){
+        sum += U[i][j] * x[j];
+        sumData.push({u: U[i][j], x: x[j]})
+      }
+      x[i] = (y[i] - sum) / U[i][i];
+      backwardSubtiution.push({y: y[i], u: U[i][i], x: x[i], sumData, i: i + 1})
+    }
+
+    const matrixB2D = matrixB.map(value => [Number(value)]);
+    const matrixY2D = y.map(value => [Number(value)]);
+
+    result.ans = { solutions: x, matrixU: U, matrixL: L, matrixA, matrixB: matrixB2D, matrixY: matrixY2D, n, forwardSubtiution, backwardSubtiution }
+
+    return result;
+  }
 }

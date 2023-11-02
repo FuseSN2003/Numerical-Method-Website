@@ -87,27 +87,40 @@ export default function MatrixInput({ handleCalculate, question }: MatrixInputPr
   }, [matrixSize, form]);
 
   const setQuestion = (dataForm: MatrixInputType) => {
-    setForm(dataForm);
+    setMatrixSize(dataForm.matrixA.length)
+    setForm({
+      matrixA: dataForm.matrixA,
+      matrixB: dataForm.matrixB
+    });
     setOpenDialog(false);
   }
 
-  const mappedQuestion = useMemo(() => {
-    return question.map((data, index) => {
+  const formattedQuestions = useMemo(() => {
+    return question.map((data) => {
       const matrixANumber = data.matrixA.map(row => row.map(element => Number(element)));
-      const matrixBNumber = data.matrixB.map(value => Number(value))
-      return (
-        <div key={index} className="w-full grid grid-cols-1 gap-4 border rounded-md p-4">
-          <div className="flex mx-auto">
-            <InlineMath math={`A = ${formatMatrix(matrixANumber)}`}/>
-            <InlineMath math={`B = ${formatMatrix1D(matrixBNumber, false)}`}/>
-          </div>
-          <div className="flex justify-center">
-            <Button onClick={() => setQuestion(data)}>Set Solution</Button>
-          </div>
+      const matrixBNumber = data.matrixB.map(value => Number(value));
+      return {
+        matrixA: data.matrixA,
+        formattedMatrixA: formatMatrix(matrixANumber),
+        matrixB: data.matrixB,
+        formattedMatrixB: formatMatrix1D(matrixBNumber, false),
+      };
+    });
+  }, [question]);
+
+  const mappedQuestion = formattedQuestions.map((data, index) => {
+    return (
+      <div key={index} className="w-full grid grid-cols-1 gap-4 border rounded-md p-4">
+        <div className="flex mx-auto">
+          <InlineMath math={`A = ${data.formattedMatrixA}`}/>
+          <InlineMath math={`B = ${data.formattedMatrixB}`}/>
         </div>
-      )
-    })
-  }, [question])
+        <div className="flex justify-center">
+          <Button onClick={() => setQuestion(data)}>Set Solution</Button>
+        </div>
+      </div>
+    )
+  });
 
   return (
     <>

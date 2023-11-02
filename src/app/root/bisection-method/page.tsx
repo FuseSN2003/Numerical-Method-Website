@@ -9,9 +9,10 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function BisectionMethodPage() {
-  const question = await getQuestion("Bisection");
+  const question = await getQuestion("Bisection Method");
   
   return (
     <PageLayout title="Bisection Method">

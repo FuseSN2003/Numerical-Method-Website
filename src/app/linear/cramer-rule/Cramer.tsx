@@ -1,11 +1,11 @@
 "use client"
 
 import ResultContainer from "@/components/ResultContainer";
-import MatrixInput from "@/components/linear/MatrixInput"
+import MatrixInput from "@/components/linear/MatrixInput";
 import { CramerResult, MatrixInputType } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { formatDet } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react"
+import { useState } from "react";
 import { BlockMath, InlineMath } from "react-katex";
 
 interface CramerProps {

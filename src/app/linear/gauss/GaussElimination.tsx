@@ -1,11 +1,11 @@
 "use client"
 
 import ResultContainer from "@/components/ResultContainer";
-import MatrixInput from "@/components/linear/MatrixInput"
+import MatrixInput from "@/components/linear/MatrixInput";
 import { GaussResult } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { createBackSubstitutionEquation, formatMatrix } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react"
+import { useState } from "react";
 import { BlockMath, InlineMath } from "react-katex";
 
 interface GaussEliminationProps {
@@ -47,7 +47,7 @@ export default function GaussElimination({ question }: GaussEliminationProps) {
         {result?.ans && (
           <>
             <div className="flex flex-col gap-2 w-full overflow-x-auto py-2">
-              <h3 className="text-lg font-semibold">Eliminations:</h3>
+              <h3 className="text-lg font-semibold underline">Eliminations:</h3>
               {result.ans.eliminationSteps.map((data, index) => (
                 <div key={index}>
                   <BlockMath
@@ -66,7 +66,7 @@ export default function GaussElimination({ question }: GaussEliminationProps) {
               ))}
             </div>
             <div className="flex flex-col gap-2 w-full overflow-x-auto py-2">
-              <h3 className="text-lg font-semibold">Back Subtiution:</h3>
+              <h3 className="text-lg font-semibold underline">Back Subtiution:</h3>
               {createBackSubstitutionEquation(result.ans.augmentedMatrix).map((data, index) => (
                   <BlockMath key={index}>{`${data}`}</BlockMath>
                 ))}
@@ -80,6 +80,9 @@ export default function GaussElimination({ question }: GaussEliminationProps) {
               </div>
             </div>
           </>
+        )}
+        {result?.error && (
+          <p>{result.error}</p>
         )}
       </ResultContainer>
     </>
