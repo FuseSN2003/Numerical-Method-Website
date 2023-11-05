@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 export default async function GaussSeidelIterationPage() {
-  const question = await getQuestion("Linear Algebra Equation");
+  const question = await getQuestion("Linear Algebra Equation Iteration");
   
   return (
     <PageLayout title="Gauss Seidel Iteration Method">
