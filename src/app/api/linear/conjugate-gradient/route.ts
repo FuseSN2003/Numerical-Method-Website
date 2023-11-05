@@ -6,15 +6,15 @@ export async function POST(req: Request) {
   if(req.method !== "POST") return NextResponse.json({ message: "Method Not Allow" }, { status: 405 });
 
   try {
-    const { form, matrixA, matrixB, guessX, epsilon } = await req.json();
+    const { form, matrixA, matrixB, initialX, epsilon } = await req.json();
 
-    const result: GaussSeidelResult = LinearAlgebraEquation.conjugateGradient(matrixA, matrixB, guessX, epsilon);
+    const result: GaussSeidelResult = LinearAlgebraEquation.conjugateGradient(matrixA, matrixB, initialX, epsilon);
 
     if(result.ans) {
-      await Solutions.addData("Conjugate Gradient", {
+      await Solutions.addData("Linear Algebra Equation Iteration", {
         matrixA: form.matrixA,
         matrixB: form.matrixB,
-        guessX: form.guessX,
+        initialX: form.initialX,
         epsilon: form.epsilon,
       });
     }

@@ -1,7 +1,7 @@
 "use client"
 
 import ResultContainer from "@/components/ResultContainer";
-import ConjugateGradientInput from "@/components/linear/ConjugateGradientInput";
+import ConjugateGradientInput from "@/components/linear/MatrixInputIteration";
 import MatrixInput from "@/components/linear/MatrixInput"
 import { CholeskyResult } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ export default function ConjugateGradient({ question }: ConjugateGradientProps) 
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleCalculate = async (form: any, matrixA: number[][], matrixB: number[], guessX: number[], epsilon: number) => {
+  const handleCalculate = async (form: any, matrixA: number[][], matrixB: number[], initialX: number[], epsilon: number) => {
     try {
       setLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/linear/conjugate-gradient`, {
@@ -25,7 +25,7 @@ export default function ConjugateGradient({ question }: ConjugateGradientProps) 
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({form, matrixA, matrixB, guessX, epsilon})
+        body: JSON.stringify({form, matrixA, matrixB, initialX, epsilon})
       })
 
       const data = await res.json();

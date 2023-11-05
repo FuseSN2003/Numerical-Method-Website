@@ -60,6 +60,8 @@ export default class SecantMethod extends RootOfEquation {
       fx1 = f.evaluate({x: x1});
       fxi = f.evaluate({x: xi});
 
+      this.points.push({x: x0, y: fx0})
+      this.points.push({x: x1, y: fx1})
       this.points.push({x: xi, y: fxi})
       iterations.push({
         xi, x1, x0, iter: this.iter, tolerance: this.tolerance, fx0 ,fx1, fxi

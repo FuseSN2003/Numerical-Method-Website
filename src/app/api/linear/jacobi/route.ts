@@ -6,15 +6,16 @@ export async function POST(req: Request) {
   if(req.method !== "POST") return NextResponse.json({ message: "Method Not Allow" }, { status: 405 });
 
   try {
-    const { form, matrixA, matrixB, epsilon } = await req.json();
+    const { form, matrixA, matrixB, initialX, epsilon } = await req.json();
 
-    const result: JacobiResult = LinearAlgebraEquation.jacobi(matrixA, matrixB, epsilon);
+    const result: JacobiResult = LinearAlgebraEquation.jacobi(matrixA, matrixB, initialX, epsilon);
 
     if(result.ans) {
       await Solutions.addData("Linear Algebra Equation Iteration", {
         matrixA: form.matrixA,
         matrixB: form.matrixB,
-        epsilon: form.epsilon
+        initialX: form.initialX,
+        epsilon: form.epsilon,
       });
     }
 

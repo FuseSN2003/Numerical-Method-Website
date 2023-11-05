@@ -1,7 +1,7 @@
 "use client"
 
 import ResultContainer from "@/components/ResultContainer";
-import MatrixInputEpsilon from "@/components/linear/MatrixInputEpsilon";
+import MatrixInputIteration from "@/components/linear/MatrixInputIteration";
 import { JacobiResult } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +16,7 @@ export default function GaussSeidel({ question }: GaussSeidelProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleCalculate = async (form: any, matrixA: number[][], matrixB: number[]) => {
+  const handleCalculate = async (form: any, matrixA: number[][], matrixB: number[], initialX: number[], epsilon: number) => {
     try {
       setLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/linear/gauss-seidel`, {
@@ -24,7 +24,7 @@ export default function GaussSeidel({ question }: GaussSeidelProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({form, matrixA, matrixB})
+        body: JSON.stringify({form, matrixA, matrixB, initialX, epsilon})
       })
 
       const data = await res.json();
@@ -40,7 +40,7 @@ export default function GaussSeidel({ question }: GaussSeidelProps) {
 
   return (
     <>
-      <MatrixInputEpsilon question={question} handleCalculate={handleCalculate}/>
+      <MatrixInputIteration question={question} handleCalculate={handleCalculate}/>
 
       <ResultContainer result={result} loading={loading}>
         {result?.ans && (

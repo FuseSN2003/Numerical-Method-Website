@@ -5,22 +5,22 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Minus, Plus } from "lucide-react";
-import { ConjugateGradientType } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
+import { MatrixInputIterationType } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { formatMatrix, formatMatrix1D } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { InlineMath } from "react-katex";
 
-interface ConjugateGradientInputProps {
-  handleCalculate: (form: any, matrixA: number[][], matrixB: number[], guessX: number[], epsilon: number) => void
-  question: ConjugateGradientType[]
+interface MatrixInputIterationProps {
+  handleCalculate: (form: any, matrixA: number[][], matrixB: number[], initialX: number[], epsilon: number) => void
+  question: MatrixInputIterationType[]
 }
 
-export default function ConjugateGradientInput({ handleCalculate, question }: ConjugateGradientInputProps) {
+export default function MatrixInputIteration({ handleCalculate, question }: MatrixInputIterationProps) {
   const [matrixSize, setMatrixSize] = useState(3);
   const [form, setForm] = useState({
     matrixA: Array.from({ length: matrixSize }, () => Array(matrixSize).fill("")),
     matrixB: Array(matrixSize).fill(""),
-    guessX: Array(matrixSize).fill(""),
+    initialX: Array(matrixSize).fill(""),
     epsilon: 1e-6
   });
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -59,10 +59,10 @@ export default function ConjugateGradientInput({ handleCalculate, question }: Co
 
   const handleguessXChange = useCallback((e: ChangeEvent<HTMLInputElement>, row: number) => {
     const newVal = e.target.value;
-    const updatedMatrix = [...form.guessX];
+    const updatedMatrix = [...form.initialX];
     updatedMatrix[row] = newVal;
-    setForm((prevState) => ({ ...prevState, guessX: updatedMatrix}))
-  }, [form.guessX])
+    setForm((prevState) => ({ ...prevState, initialX: updatedMatrix}))
+  }, [form.initialX])
 
   const handleEpsilonChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setForm((PrevState) => ({ ...PrevState, [e.target.name]: e.target.value}))
@@ -71,10 +71,10 @@ export default function ConjugateGradientInput({ handleCalculate, question }: Co
   const calculate = useCallback(() => {
     const matrixA = form.matrixA.map((row) => row.map(Number));
     const matrixB = form.matrixB.map(Number);
-    const guessX = form.guessX.map(Number);
+    const initialX = form.initialX.map(Number);
     const epsilon = Number(form.epsilon)
     
-    handleCalculate(form, matrixA, matrixB, guessX, epsilon)
+    handleCalculate(form, matrixA, matrixB, initialX, epsilon)
   }, [form, handleCalculate])
 
 
@@ -89,30 +89,30 @@ export default function ConjugateGradientInput({ handleCalculate, question }: Co
       form.matrixB[i] ? form.matrixB[i] : ""
     );
 
-    const newGuessX = Array.from({ length: matrixSize }, (_, i) =>
-      form.guessX[i] ? form.guessX[i] : ""
+    const newIntialX = Array.from({ length: matrixSize }, (_, i) =>
+      form.initialX[i] ? form.initialX[i] : ""
     );
     
     if (
       matrixSize !== form.matrixA.length ||
       matrixSize !== form.matrixB.length ||
-      matrixSize !== form.guessX.length
+      matrixSize !== form.initialX.length
     ) {
       setForm((prevState) => ({
         ...prevState,
         matrixA: newMatrixA,
         matrixB: newMatrixB,
-        guessX: newGuessX,
+        initialX: newIntialX,
       }))
     }
   }, [matrixSize, form]);
 
-  const setQuestion = (dataForm: ConjugateGradientType) => {
+  const setQuestion = (dataForm: MatrixInputIterationType) => {
     setMatrixSize(dataForm.matrixA.length)
     setForm({
       matrixA: dataForm.matrixA,
       matrixB: dataForm.matrixB,
-      guessX: dataForm.guessX,
+      initialX: dataForm.initialX,
       epsilon: Number(dataForm.epsilon),
     });
     setOpenDialog(false);
@@ -122,14 +122,14 @@ export default function ConjugateGradientInput({ handleCalculate, question }: Co
     return question.map((data) => {
       const matrixANumber = data.matrixA.map(row => row.map(element => Number(element)));
       const matrixBNumber = data.matrixB.map(value => Number(value));
-      const guessXNumber = data.guessX.map(value => Number(value));
+      const initialXNumber = data.initialX.map(value => Number(value));
       return {
         matrixA: data.matrixA,
         formattedMatrixA: formatMatrix(matrixANumber),
         matrixB: data.matrixB,
         formattedMatrixB: formatMatrix1D(matrixBNumber, false),
-        guessX: data.guessX,
-        formattedGuessX: formatMatrix1D(guessXNumber, true),
+        initialX: data.initialX,
+        formattedInitialX: formatMatrix1D(initialXNumber, true),
         epsilon: data.epsilon,
       };
     });
@@ -143,7 +143,7 @@ export default function ConjugateGradientInput({ handleCalculate, question }: Co
           <InlineMath math={`B = ${data.formattedMatrixB}`}/>
         </div>
         <div>
-          <InlineMath math={`GuessX = ${data.formattedGuessX}`}/>
+          <InlineMath math={`GuessX = ${data.formattedInitialX}`}/>
         </div>
         <div>
           <InlineMath math={`Epislon(\\epsilon) = ${data.epsilon}`}/>
@@ -254,9 +254,9 @@ export default function ConjugateGradientInput({ handleCalculate, question }: Co
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label className="mx-auto"><InlineMath math={`X^{0}`}/></Label>
+        <Label className="mx-auto"><InlineMath math={`{X}^{0}`}/></Label>
         <div className="mx-auto flex gap-1">
-          {form.guessX.map((value, index) => (
+          {form.initialX.map((value, index) => (
             <Input
               key={`${index}`}
               className="h-20 w-20 text-center"

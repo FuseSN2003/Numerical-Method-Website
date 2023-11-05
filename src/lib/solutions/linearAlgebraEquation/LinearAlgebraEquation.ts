@@ -5,16 +5,10 @@ export interface MatrixInputType {
   matrixB: string[]
 }
 
-export interface ConjugateGradientType {
+export interface MatrixInputIterationType {
   matrixA: string[][]
   matrixB: string[]
-  guessX: string[]
-  epsilon: string
-}
-
-export interface MatrixInputEpsilonType {
-  matrixA: string[][]
-  matrixB: string[]
+  initialX: string[]
   epsilon: string
 }
 
@@ -481,11 +475,11 @@ export default class LinearAlgebraEquation {
     return result;
   }
 
-  public static jacobi(matrixA: number[][], matrixB: number[], epsilon: number): JacobiResult {
+  public static jacobi(matrixA: number[][], matrixB: number[], initialX: number[], epsilon: number): JacobiResult {
     const n = matrixA.length;
     const result: JacobiResult = {};
 
-    const x = new Array(n).fill(0);
+    const x = [...initialX]
     const xOld = new Array(n).fill(0);
 
     for (let k = 0; k < 1000; k++) {
@@ -520,11 +514,11 @@ export default class LinearAlgebraEquation {
     return result;
   }
 
-  public static gaussSeidel(matrixA: number[][], matrixB: number[], epsilon: number): GaussSeidelResult {
+  public static gaussSeidel(matrixA: number[][], matrixB: number[], initialX: number[], epsilon: number): GaussSeidelResult {
     const n = matrixA.length;
     const result: GaussSeidelResult = {};
 
-    const x = new Array(n).fill(0);
+    const x = [...initialX]
 
     for (let k = 0; k < 1000; k++) {
       let error = 0;
@@ -559,10 +553,10 @@ export default class LinearAlgebraEquation {
     return result;
   }
 
-  public static conjugateGradient(matrixA: number[][], matrixB: number[], guessX: number[], epsilon: number): ConjugateResult {
+  public static conjugateGradient(matrixA: number[][], matrixB: number[], initialX: number[], epsilon: number): ConjugateResult {
     const result: ConjugateResult = {}
     
-    let x = [...guessX];
+    let x = [...initialX];
     let r = this.vectorSubtract(matrixB, this.matrixVectorMultiply(matrixA, x));
     let p = [...r];
     let rsold = this.vectorDot(r, r);
