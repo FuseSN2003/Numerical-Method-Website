@@ -18,8 +18,9 @@ export const linearAlgebraEquation: MenuDataType[] = [
   { label: "Gauss-Jordan Elimination", link: "/linear/gauss-jordan" },
   { label: "Matrix Inversion", link: "/linear/matrix-inversion" },
   { label: "LU Decomposition Method", link: "/linear/lu-decomposition" },
-  { label: "Jacobi Iteration Method", link: "/linear/jacobi-iteration" },
-  { label: "Gauss Seidel Iteration Method", link: "/linear/gauss-seidel-iteration" },
+  { label: "Cholesky Decomposition Method", link: "/linear/cholesky" },
+  { label: "Jacobi Iteration Method", link: "/linear/jacobi" },
+  { label: "Gauss Seidel Iteration Method", link: "/linear/gauss-seidel" },
   { label: "Conjugate Gradient Method", link: "/linear/conjugate-gradient" },
 ]
 

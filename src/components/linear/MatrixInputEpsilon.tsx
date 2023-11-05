@@ -5,21 +5,22 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Minus, Plus } from "lucide-react";
-import { MatrixInputType } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
+import { MatrixInputEpsilonType } from "@/lib/solutions/linearAlgebraEquation/LinearAlgebraEquation";
 import { formatMatrix, formatMatrix1D } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { InlineMath } from "react-katex";
 
-interface MatrixInputProps {
-  handleCalculate: (form: any, matrixA: number[][], matrixB: number[], epsilon?: number, guessX?: number[]) => void
-  question: MatrixInputType[]
+interface ConjugateGradientInputProps {
+  handleCalculate: (form: any, matrixA: number[][], matrixB: number[], epsilon: number) => void
+  question: MatrixInputEpsilonType[]
 }
 
-export default function MatrixInput({ handleCalculate, question }: MatrixInputProps) {
+export default function MatrixInputEpsilon({ handleCalculate, question }: ConjugateGradientInputProps) {
   const [matrixSize, setMatrixSize] = useState(3);
   const [form, setForm] = useState({
     matrixA: Array.from({ length: matrixSize }, () => Array(matrixSize).fill("")),
     matrixB: Array(matrixSize).fill(""),
+    epsilon: 1e-6
   });
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
@@ -55,11 +56,16 @@ export default function MatrixInput({ handleCalculate, question }: MatrixInputPr
     setForm((prevState) => ({ ...prevState, matrixB: updatedMatrix}))
   }, [form.matrixB])
 
+  const handleEpsilonChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setForm((PrevState) => ({ ...PrevState, [e.target.name]: e.target.value}))
+  }, [])
+
   const calculate = useCallback(() => {
     const matrixA = form.matrixA.map((row) => row.map(Number));
     const matrixB = form.matrixB.map(Number);
+    const epsilon = Number(form.epsilon)
     
-    handleCalculate(form, matrixA, matrixB)
+    handleCalculate(form, matrixA, matrixB, epsilon)
   }, [form, handleCalculate])
 
 
@@ -86,11 +92,12 @@ export default function MatrixInput({ handleCalculate, question }: MatrixInputPr
     }
   }, [matrixSize, form]);
 
-  const setQuestion = (dataForm: MatrixInputType) => {
+  const setQuestion = (dataForm: MatrixInputEpsilonType) => {
     setMatrixSize(dataForm.matrixA.length)
     setForm({
       matrixA: dataForm.matrixA,
       matrixB: dataForm.matrixB,
+      epsilon: Number(dataForm.epsilon),
     });
     setOpenDialog(false);
   }
@@ -104,6 +111,7 @@ export default function MatrixInput({ handleCalculate, question }: MatrixInputPr
         formattedMatrixA: formatMatrix(matrixANumber),
         matrixB: data.matrixB,
         formattedMatrixB: formatMatrix1D(matrixBNumber, false),
+        epsilon: data.epsilon,
       };
     });
   }, [question]);
@@ -114,6 +122,9 @@ export default function MatrixInput({ handleCalculate, question }: MatrixInputPr
         <div className="flex mx-auto">
           <InlineMath math={`A = ${data.formattedMatrixA}`}/>
           <InlineMath math={`B = ${data.formattedMatrixB}`}/>
+        </div>
+        <div>
+          <InlineMath math={`Epislon(\\epsilon) = ${data.epsilon}`}/>
         </div>
         <div className="flex justify-center">
           <Button onClick={() => setQuestion(data)}>Set Solution</Button>
@@ -138,18 +149,31 @@ export default function MatrixInput({ handleCalculate, question }: MatrixInputPr
           </DialogContent>
         </Dialog>
 
-      <div className="mx-auto flex items-end gap-2">
-        <Button onClick={decreaseSize} variant={"destructive"}><Minus /></Button>
-        <div className="flex flex-col gap-2">
-          <Label>Matrix size (NxN)</Label>
+      <div className="mx-auto flex flex-col gap-4">
+        <div className="mx-auto flex items-end gap-2">
+          <Button onClick={decreaseSize} variant={"destructive"}><Minus /></Button>
+          <div className="flex flex-col gap-2">
+            <Label>Matrix size (NxN)</Label>
+            <Input
+              value={matrixSize}
+              type="number"
+              min={2}
+              onChange={handleChangeSize}
+            />
+          </div>
+          <Button onClick={increaseSize} variant={"default"} className="bg-green-500 hover:bg-green-500/90"><Plus /></Button>
+        </div>
+        <div>
+          <Label><InlineMath math={`Epsilon (\\epsilon)`}/></Label>
           <Input
-            value={matrixSize}
+            value={form.epsilon}
+            name="epsilon"
             type="number"
-            min={2}
-            onChange={handleChangeSize}
+            min={0}
+            step={1e-6}
+            onChange={handleEpsilonChange}
           />
         </div>
-        <Button onClick={increaseSize} variant={"default"} className="bg-green-500 hover:bg-green-500/90"><Plus /></Button>
       </div>
 
       <div className="max-w-full w-fit mx-auto flex gap-2 overflow-x-auto p-2">

@@ -1,8 +1,21 @@
-import { det } from "mathjs";
+import { det, sqrt } from "mathjs";
 
 export interface MatrixInputType {
   matrixA: string[][]
   matrixB: string[]
+}
+
+export interface ConjugateGradientType {
+  matrixA: string[][]
+  matrixB: string[]
+  guessX: string[]
+  epsilon: string
+}
+
+export interface MatrixInputEpsilonType {
+  matrixA: string[][]
+  matrixB: string[]
+  epsilon: string
 }
 
 interface CramerStep {
@@ -138,6 +151,33 @@ export interface LUResult {
   error?: string
 }
 
+export interface CholeskyResult {
+  ans?: {
+    x: number[]
+  }
+  error?: string
+}
+
+export interface JacobiResult {
+  ans?: {
+    x: number[]
+  }
+  error?: string
+}
+
+export interface GaussSeidelResult {
+  ans?: {
+    x: number[]
+  }
+  error?: string
+}
+
+export interface ConjugateResult {
+  ans?: {
+    x: number[]
+  }
+  error?: string
+}
 export default class LinearAlgebraEquation {
 
   public static createIdentityMatrix(size: number): number[][] {
@@ -384,5 +424,186 @@ export default class LinearAlgebraEquation {
     result.ans = { solutions: x, matrixU: U, matrixL: L, matrixA, matrixB: matrixB2D, matrixY: matrixY2D, n, forwardSubtiution, backwardSubtiution }
 
     return result;
+  }
+
+  public static cholesky(matrixA: number[][], matrixB: number[]): CholeskyResult {
+    const n = matrixA.length;
+    const result: CholeskyResult = {};
+
+    const L = Array.from({ length: n }, () => Array(n).fill(0));
+
+    for (let i = 0; i < n; i++) {
+      let sum = 0;
+
+      for (let k = 0; k < i; k++) {
+        sum += Math.pow(L[i][k], 2);
+      }
+
+      L[i][i] = sqrt(matrixA[i][i] - sum);
+
+      for (let j = i + 1; j < n; j++) {
+        let sum = 0;
+
+        for (let k = 0; k < i; k++) {
+          sum += L[i][k] * L[j][k];
+        }
+
+        L[j][i] = (matrixA[j][i] - sum) / L[i][i];
+      }
+    }
+    
+    const y: number[] = new Array(n);
+
+    for (let i = 0; i < n; i++) {
+      let sum = 0;
+
+      for (let j = 0; j < i; j++) {
+        sum += L[i][j] * y[j];
+      }
+
+      y[i] = (matrixB[i] - sum) / L[i][i];
+    }
+
+    const x: number[] = new Array(n);
+
+    for (let i = n - 1; i >= 0; i--) {
+      let sum = 0;
+
+      for (let j = i + 1; j < n; j++) {
+        sum += L[j][i] * x[j];
+      }
+
+      x[i] = (y[i] - sum) / L[i][i];
+    }
+
+    result.ans = { x };
+
+    return result;
+  }
+
+  public static jacobi(matrixA: number[][], matrixB: number[], epsilon: number): JacobiResult {
+    const n = matrixA.length;
+    const result: JacobiResult = {};
+
+    const x = new Array(n).fill(0);
+    const xOld = new Array(n).fill(0);
+
+    for (let k = 0; k < 1000; k++) {
+      for (let i = 0; i < n; i++) {
+        let sum = 0;
+        for (let j = 0; j < n; j++) {
+          if (j !== i) {
+            sum += matrixA[i][j] * xOld[j];
+          }
+        }
+        x[i] = (matrixB[i] - sum) / matrixA[i][i];
+      }
+  
+      let error = 0;
+      for (let i = 0; i < n; i++) {
+        error = (Math.abs((x[i] - xOld[i]) / x[i]) * 100);
+      }
+  
+      // Update the old solution
+      for (let i = 0; i < n; i++) {
+        xOld[i] = x[i];
+      }
+  
+      // Check for convergence
+      if (error < epsilon) {
+        break;
+      }
+    }
+
+    result.ans = { x }
+
+    return result;
+  }
+
+  public static gaussSeidel(matrixA: number[][], matrixB: number[], epsilon: number): GaussSeidelResult {
+    const n = matrixA.length;
+    const result: GaussSeidelResult = {};
+
+    const x = new Array(n).fill(0);
+
+    for (let k = 0; k < 1000; k++) {
+      let error = 0;
+
+      for (let i = 0; i < n; i++) {
+        let sum1 = 0;
+        let sum2 = 0;
+
+        for (let j = 0; j < i; j++) {
+          sum1 += matrixA[i][j] * x[j];
+        }
+
+        for (let j = i + 1; j < n; j++) {
+          sum2 += matrixA[i][j] * x[j];
+        }
+
+        x[i] = (matrixB[i] - sum1 - sum2) / matrixA[i][i];
+      }
+
+      for (let i = 0; i < n; i++) {
+        error += Math.abs(x[i] - x[i - 1] || 0);
+      }
+
+      // Check for convergence
+      if (error < epsilon) {
+        break;
+      }
+    }
+
+    result.ans = { x };
+
+    return result;
+  }
+
+  public static conjugateGradient(matrixA: number[][], matrixB: number[], guessX: number[], epsilon: number): ConjugateResult {
+    const result: ConjugateResult = {}
+    
+    let x = [...guessX];
+    let r = this.vectorSubtract(matrixB, this.matrixVectorMultiply(matrixA, x));
+    let p = [...r];
+    let rsold = this.vectorDot(r, r);
+
+    for (let i = 0; i < 1000; i++) {
+      const Ap = this.matrixVectorMultiply(matrixA, p);
+      const alpha = rsold / this.vectorDot(p, Ap);
+      x = this.vectorAdd(x, this.vectorScale(alpha, p));
+      r = this.vectorSubtract(r, this.vectorScale(alpha, Ap));
+      const rsnew = this.vectorDot(r, r);
+
+      if (Math.sqrt(rsnew) < epsilon) {
+        break;
+      }
+
+      p = this.vectorAdd(r, this.vectorScale(rsnew / rsold, p));
+      rsold = rsnew;
+    }
+
+    result.ans = { x }
+
+    return result;
+  }
+
+  private static vectorAdd(u: number[], v: number[]): number[] {
+    return u.map((x, i) => x + v[i]);
+  }
+
+  private static vectorSubtract(u: number[], v: number[]): number[] {
+    return u.map((x, i) => x - v[i]);
+  }
+
+  private static vectorDot(u: number[], v: number[]): number {
+    return u.reduce((acc, x, i) => acc + x * v[i], 0);
+  }
+
+  private static vectorScale(scalar: number, v: number[]): number[] {
+    return v.map(x => scalar * x);
+  }
+
+  private static matrixVectorMultiply(A: number[][], x: number[]): number[] {
+    return A.map(row => this.vectorDot(row, x));
   }
 }

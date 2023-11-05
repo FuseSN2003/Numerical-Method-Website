@@ -57,7 +57,7 @@ export default function SelectMenu() {
   }, [selected])
 
   return (
-    <div className="w-full flex flex-col items-center gap-8 min-h-[50dvh]">
+    <div className="w-full flex flex-col items-center gap-8 min-h-[55dvh]">
       <Select defaultValue="rootOfEquation" onValueChange={(e) => setSelected(e)}>
         <SelectTrigger className="w-60">
           <SelectValue />
