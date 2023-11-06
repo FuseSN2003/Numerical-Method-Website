@@ -4,11 +4,14 @@ export interface DiffResult {
   ans?: {
     result: number
     h: number
+    x: number
+    fx: number[]
     order: number
     errorValue: number
     exactValue: number
     error: string
     exacDiff: string
+    direction: string
   }
   error?: string
 }
@@ -140,7 +143,7 @@ export default class Differentiation {
     const approx = (fx[1] - fx[0]) / this.h;
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: this.h, x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result;
   }
@@ -152,10 +155,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(0, 2);
 
-    const approx = fx[2] - (2*fx[1]) + fx[0] / Math.pow(this.h, 2);
+    const approx = (fx[2] - (2*fx[1]) + fx[0]) / Math.pow(this.h, 2);
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 2), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -170,7 +173,7 @@ export default class Differentiation {
     const approx = (fx[3] - (3*fx[2]) + (3*fx[1]) - fx[0]) / Math.pow(this.h, 3)
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 3), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -182,10 +185,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(0, 4);
     
-    const approx = fx[4] - (4*fx[3]) + (6*fx[2]) - (4*fx[1]) + fx[0] / Math.pow(this.h, 4);
+    const approx = (fx[4] - (4*fx[3]) + (6*fx[2]) - (4*fx[1]) + fx[0]) / Math.pow(this.h, 4);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 4), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -200,7 +203,7 @@ export default class Differentiation {
     const approx = (fx[1] - fx[0]) / this.h;
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: this.h, x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result;
   }
@@ -212,10 +215,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(-2, 0);
 
-    const approx = fx[2] - (2*fx[1]) + fx[0] / Math.pow(this.h, 2);
+    const approx = (fx[2] - (2*fx[1]) + fx[0]) / Math.pow(this.h, 2);
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 2), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -230,7 +233,7 @@ export default class Differentiation {
     const approx = (fx[3] - (3*fx[2]) + (3*fx[1]) - fx[0]) / Math.pow(this.h, 3)
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 3), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -242,10 +245,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(-4, 0);
     
-    const approx = fx[4] - (4*fx[3]) + (6*fx[2]) - (4*fx[1]) + fx[0] / Math.pow(this.h, 4);
+    const approx = (fx[4] - (4*fx[3]) + (6*fx[2]) - (4*fx[1]) + fx[0]) / Math.pow(this.h, 4);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 4), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -260,7 +263,7 @@ export default class Differentiation {
     const approx = (-fx[2] + (4*fx[1]) - (3*fx[0])) / (2*this.h)
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: (2*this.h), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result;
   }
@@ -275,7 +278,7 @@ export default class Differentiation {
     const approx = (-fx[3] + (4*fx[2]) - (5*fx[1]) + (2*fx[0])) / Math.pow(this.h, 2)
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 2), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -287,10 +290,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(0, 4);
     
-    const approx = (-3*fx[4] + (14*fx[3]) - (24*fx[2]) + (18*fx[1]) - (5*fx[0])) / (2*Math.pow(this.h, 2))
+    const approx = (-3*fx[4] + (14*fx[3]) - (24*fx[2]) + (18*fx[1]) - (5*fx[0])) / (2*Math.pow(this.h, 3))
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 2*Math.pow(this.h, 3), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -305,7 +308,7 @@ export default class Differentiation {
     const approx = ((-2*fx[5]) + (11*fx[4]) - (24*fx[3]) + (26*fx[2]) - (14*fx[1]) + (3*fx[0])) / Math.pow(this.h, 4);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 4), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -320,7 +323,7 @@ export default class Differentiation {
     const approx = ((3*fx[2]) - (4*fx[1]) + fx[0]) / (2*this.h)
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 2*this.h, x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result;
   }
@@ -335,7 +338,7 @@ export default class Differentiation {
     const approx = (2*fx[3]) - (5*fx[2]) + (4*fx[1]) - fx[0] / Math.pow(this.h, 2);
     const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 2), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -347,10 +350,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(-4, 0);
     
-    const approx = ((5*fx[4]) - (18*fx[3]) + (24*fx[2]) - (14*fx[1]) - fx[0]) / (2*Math.pow(this.h, 3));
+    const approx = ((5*fx[4]) - (18*fx[3]) + (24*fx[2]) - (14*fx[1]) + (3*fx[0])) / (2*(Math.pow(this.h, 3)))
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 2*Math.pow(this.h, 3), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -362,10 +365,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(-5, 0);
     
-    const approx = (3*fx[5]) - (14*fx[4]) + (26*fx[3]) - (24*fx[2]) + (11*fx[1]) - (2*fx[0]) / Math.pow(this.h, 4);
+    const approx = ((3*fx[5]) - (14*fx[4]) + (26*fx[3]) - (24*fx[2]) + (11*fx[1]) - (2*fx[0])) / Math.pow(this.h, 4);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 4), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -384,7 +387,7 @@ export default class Differentiation {
     const approx = (fx[1] - fx[0]) / (2*this.h);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: (2*this.h), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -399,7 +402,7 @@ export default class Differentiation {
     const approx = (fx[2] - (2*fx[1]) + fx[0]) / Math.pow(this.h, 2);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 2), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -418,7 +421,7 @@ export default class Differentiation {
     const approx = (fx[3] - (2*fx[2]) + (2*fx[1]) - fx[0]) / (2*Math.pow(this.h, 3));
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 2*Math.pow(this.h, 3), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -433,7 +436,7 @@ export default class Differentiation {
     const approx = (fx[4] - (4*fx[3]) + (6*fx[2]) - (4*fx[1]) + fx[0]) / Math.pow(this.h, 4);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: Math.pow(this.h, 4), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -452,7 +455,7 @@ export default class Differentiation {
     const approx = (-fx[3] + (8*fx[2]) - (8*fx[1]) + fx[0]) / (12*this.h);
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 12*this.h, x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -467,7 +470,7 @@ export default class Differentiation {
     const approx = (-fx[4] + (16*fx[3]) - (30*fx[2]) + (16*fx[1]) - fx[0]) / (12*Math.pow(this.h, 2))
     const errorValue = this.calErrorVal(exactValue, approx)
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 12*Math.pow(this.h, 2), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -483,10 +486,10 @@ export default class Differentiation {
       fx.push(this.f.evaluate({x: this.x+i*this.h}))
     }
     
-    const approx = (-fx[5] + (8*fx[4]) - (13*fx[3]) + (13*fx[2]) - (8*fx[1]) + fx[0]) / (8*Math.pow(this.h, 8))
-    const errorValue = this.calErrorVal(exactValue, approx)
+    const approx = (-fx[5] + (8*fx[4]) - (13*fx[3]) + (13*fx[2]) - (8*fx[1]) + fx[0]) / (8*Math.pow(this.h, 3));
+    const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 8*Math.pow(this.h, 8), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }
@@ -498,10 +501,10 @@ export default class Differentiation {
 
     const fx = this.calFunc(-3, 3);
     
-    const approx = (-fx[6] + (12*fx[5]) - (39*fx[4]) + (56*fx[3]) - (39*fx[2]) + (12*fx[1]) - fx[0]) / (6*Math.pow(this.h, 6));
-    const errorValue = this.calErrorVal(exactValue, approx)
+    const approx = (-fx[6] + (12*fx[5]) - (39*fx[4]) + (56*fx[3]) - (39*fx[2]) + (12*fx[1]) - fx[0]) / (6*Math.pow(this.h, 4));
+    const errorValue = this.calErrorVal(exactValue, approx);
 
-    result.ans = { result: approx, h: this.h, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString() }
+    result.ans = { result: approx, h: 6*Math.pow(this.h, 6), x: this.x, error: this.error, order: this.order,errorValue, exactValue, exacDiff: exactDiff.toString(), direction: this.direction, fx }
 
     return result
   }

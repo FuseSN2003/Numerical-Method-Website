@@ -2,6 +2,7 @@
 
 import DisplayResult from "@/components/DisplayResult"
 import ResultContainer from "@/components/ResultContainer"
+import DisplayDiff from "@/components/diff/DisplayDiff"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -11,7 +12,7 @@ import { DiffResult } from "@/lib/solutions/differentiation/Differentiation"
 import { re } from "mathjs"
 import { useRouter } from "next/navigation"
 import React, { ChangeEvent, useEffect, useMemo, useState } from "react"
-import { InlineMath } from "react-katex"
+import { BlockMath, InlineMath } from "react-katex"
 
 interface DifferentiationProps {
   question: any
@@ -206,8 +207,7 @@ export default function DifferentiationComponent({ question }: DifferentiationPr
       <ResultContainer result={result} loading={loading}>
         {result?.ans && (
           <DisplayResult>
-            <h3 className="text-xl font-bold underline">Answer: </h3>
-            <InlineMath math={`${result.ans.result}`} />
+            <DisplayDiff result={result}/>
           </DisplayResult>
         )}
       </ResultContainer>
